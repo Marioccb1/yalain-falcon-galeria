@@ -1,4 +1,4 @@
-const IMG = {
+window.IMG = {
   // Retrato del artista (mismo retrato en varios formatos)
   artistHero:   'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&q=80',
   artistWide:   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80',
@@ -14,11 +14,12 @@ const IMG = {
   inf31: 'https://images.unsplash.com/photo-1579965342575-16428a7c8881?w=800&q=80',
   inf40: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&q=80'
 };
+const IMG = window.IMG;
 
 /* ============================================================
    DATOS DE OBRA
    ============================================================ */
-const works = [
+window.works = [
   {
     id:'inf-01', titulo:'Infinito I', numero:'01', anio:2016,
     medidas:'100 × 80 cm', tecnica:'Óleo sobre lienzo',
@@ -84,5 +85,24 @@ const works = [
     desc:'Casi monocroma, esta obra cierra por ahora la serie con una sobriedad absoluta. La cifra emerge apenas de la penumbra y propone una lectura serena: el proceso continúa, y con él, la cuenta.'
   }
 ];
-const WHATSAPP = '5352932396';
-const IG = 'https://instagram.com/infinitecubanartist';
+window.WHATSAPP = '5352932396';
+window.IG = 'https://instagram.com/infinitecubanartist';
+window.artistProfile = {
+  birth_place: 'La Habana, Cuba',
+  birth_year: 1972,
+  summary: 'Diseñador industrial de formación, pintor por necesidad de expresión. Su obra se construye por capas: una superficie que habla de proceso, cambio y permanencia.',
+  quote: 'Trabajo por capas. Dejo que la pintura decida cuándo está terminada: a veces tarda meses, a veces años.',
+  quote_attribution: 'Yalain Falcón Yanes · La Habana',
+  portrait_url: window.IMG.artistWide,
+  biography: 'Nacido en La Habana, Cuba, en 1972, Yalain Falcón Yanes se formó como diseñador industrial en el Instituto Superior Politécnico de Diseño Industrial (1995). Su formación técnica marcó una base estructural que más adelante evolucionó hacia la pintura, donde encontró un medio más directo de expresión y comunicación.\n\nLa práctica artística de Yalain se basa en la experimentación por capas. Utiliza diversos materiales y técnicas, permitiendo que cada pieza evolucione con el tiempo. El resultado es una superficie que habla de proceso, cambio y permanencia.',
+  artistic_vision: 'En la década de los noventa, el arte abstracto cubano vivió una revitalización significativa. Nuevas generaciones retomaron esta tradición aportando perspectivas contemporáneas.\n\nLa obra de Yalain se inserta en ese diálogo: respeta la raíz abstracta, pero la adapta a una mirada actual, donde el mensaje y la experiencia emocional del espectador son fundamentales.',
+  series_description: '«Infinito» nace como resultado de una investigación sobre las actitudes y las relaciones humanas. En esta serie, el artista pinta números consecutivos sobre fondos de color —y ocasionalmente blancos— acompañados de frases motivacionales.\n\nCada obra representa un momento del proceso personal del artista, convirtiéndose en un testimonio visual de crecimiento y transformación.'
+};
+window.exhibitions = [
+  { year: 2016, title: 'Inicio de la serie «Infinito»', place: 'La Habana, Cuba' },
+  { year: 2019, title: 'Exposición colectiva de arte abstracto', place: 'La Habana, Cuba' },
+  { year: 2021, title: 'Selección de arte cubano contemporáneo', place: 'Miami, EE. UU.' },
+  { year: 2022, title: 'Feria internacional de arte', place: 'Madrid, España' },
+  { year: 2024, title: '«Infinito», exposición individual', place: 'Ciudad de México, México' },
+  { year: 2025, title: 'Obra en colecciones privadas', place: 'EE. UU. · España · México' }
+];

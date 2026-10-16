@@ -1,23 +1,39 @@
 const pageBase = document.body.dataset.base || '';
+const works = window.works;
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
+function escapeHTML(value = ''){
+  return String(value).replace(/[&<>"']/g, character => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  })[character]);
+}
+function safeImageURL(value){
+  try{
+    const url = new URL(String(value || ''), window.location.href);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  }catch{
+    return '';
+  }
+}
+
 function artworkImgHTML(w){
   return `<div class="artwork-img">
-    <img src="${w.img}" alt="${w.titulo} — ${w.tecnica}, ${w.anio}" loading="lazy">
+    <img src="${escapeHTML(safeImageURL(w.img))}" alt="${escapeHTML(`${w.titulo} — ${w.tecnica}, ${w.anio}`)}" loading="lazy">
   </div>`;
 }
 
 function cardHTML(w){
+  const encodedId = encodeURIComponent(w.id);
   return `<article class="card">
-    <div class="card-canvas" data-light="${w.id}" role="button" tabindex="0" aria-label="Ampliar ${w.titulo}">
+    <div class="card-canvas" data-light="${escapeHTML(w.id)}" role="button" tabindex="0" aria-label="Ampliar ${escapeHTML(w.titulo)}">
       ${artworkImgHTML(w)}
     </div>
-    <h3 class="card-title">${w.titulo}</h3>
-    <p class="card-meta">${w.anio} · ${w.medidas}</p>
+    <h3 class="card-title">${escapeHTML(w.titulo)}</h3>
+    <p class="card-meta">${escapeHTML(w.anio)} · ${escapeHTML(w.medidas)}</p>
     <div class="card-actions">
-      <button class="mini" data-desc="${w.id}">Descripción</button>
-      <a class="mini" href="${pageBase}detalles/index.html?id=${w.id}">Ver ficha</a>
+      <button class="mini" data-desc="${escapeHTML(w.id)}">Descripción</button>
+      <a class="mini" href="${pageBase}detalles/index.html?id=${encodedId}">Ver ficha</a>
     </div>
   </article>`;
 }
@@ -32,7 +48,7 @@ function renderGrid(selector, list){
    ============================================================ */
 function roomSVG(w){
   return `
-  <svg class="room-svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${w.titulo} en una pared">
+  <svg class="room-svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHTML(w.titulo)} en una pared">
     <defs>
       <linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="#F7F2E9"/><stop offset="1" stop-color="#E8E0D2"/>
@@ -94,7 +110,7 @@ function roomSVG(w){
 
     <!-- cuadro real (imagen) -->
     <g clip-path="url(#artClip)">
-      <image href="${w.img}" x="700" y="148" width="400" height="500"
+      <image href="${escapeHTML(safeImageURL(w.img))}" x="700" y="148" width="400" height="500"
              preserveAspectRatio="xMidYMid slice" crossorigin="anonymous"/>
     </g>
     <rect x="700" y="148" width="400" height="500" fill="url(#gloss)"/>
@@ -125,11 +141,12 @@ function closeModals(){
 function openDescription(id){
   const w = works.find(x => x.id === id);
   if(!w) return;
+  const encodedId = encodeURIComponent(w.id);
   $('#modalDescBody').innerHTML = `
-    <h3>${w.titulo}</h3>
-    <p class="modal-meta">${w.anio} · ${w.medidas} · ${w.tecnica}</p>
-    <p>${w.desc}</p>
-    <a class="btn" href="${pageBase}detalles/index.html?id=${w.id}" data-close>Ver ficha completa</a>
+    <h3>${escapeHTML(w.titulo)}</h3>
+    <p class="modal-meta">${escapeHTML(w.anio)} · ${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</p>
+    <p>${escapeHTML(w.desc)}</p>
+    <a class="btn" href="${pageBase}detalles/index.html?id=${encodedId}" data-close>Ver ficha completa</a>
   `;
   openModal(modalDesc);
 }
@@ -147,8 +164,8 @@ function openWall(id){
   $('#wallBody').innerHTML = `
     ${roomSVG(w)}
     <div class="wall-caption">
-      <span>${w.titulo} · ${w.anio}</span>
-      <span>${w.medidas} · ${w.tecnica}</span>
+      <span>${escapeHTML(w.titulo)} · ${escapeHTML(w.anio)}</span>
+      <span>${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</span>
     </div>
   `;
   openModal(modalWall);
@@ -186,3 +203,5 @@ menuToggle.addEventListener('click', () => {
 });
 
 $('#year').textContent = new Date().getFullYear();
+
+export { $, $$, artworkImgHTML, cardHTML, escapeHTML, pageBase, renderGrid };

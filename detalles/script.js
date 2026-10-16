@@ -1,3 +1,6 @@
+import { $, artworkImgHTML, escapeHTML, pageBase } from '../assets/js/common.js';
+
+const { works, WHATSAPP } = window;
 const artworkId = new URLSearchParams(window.location.search).get('id');
 const artworkIndex = works.findIndex((work) => work.id === artworkId);
 const artworkContent = $('#artworkContent');
@@ -9,6 +12,8 @@ if (artworkIndex === -1) {
   const previous = works[(artworkIndex - 1 + works.length) % works.length];
   const next = works[(artworkIndex + 1) % works.length];
   const message = encodeURIComponent(`Hola Yalain, me interesa la obra "${work.titulo}" (${work.anio}).`);
+  const previousId = encodeURIComponent(previous.id);
+  const nextId = encodeURIComponent(next.id);
   artworkContent.innerHTML = `
     <div class="artwork-grid">
       <div>
@@ -20,20 +25,20 @@ if (artworkIndex === -1) {
       </div>
       <div>
         <p class="eyebrow eyebrow--accent">Serie Infinito</p>
-        <h1 class="artwork-title">${work.titulo}</h1>
+        <h1 class="artwork-title">${escapeHTML(work.titulo)}</h1>
         <dl class="spec">
-          <dt>Año</dt><dd>${work.anio}</dd>
-          <dt>Medidas</dt><dd>${work.medidas}</dd>
-          <dt>Material</dt><dd>${work.tecnica}</dd>
+          <dt>Año</dt><dd>${escapeHTML(work.anio)}</dd>
+          <dt>Medidas</dt><dd>${escapeHTML(work.medidas)}</dd>
+          <dt>Material</dt><dd>${escapeHTML(work.tecnica)}</dd>
           <dt>Serie</dt><dd>Infinito · 2016 – presente</dd>
         </dl>
-        <p class="artwork-desc">${work.desc}</p>
+        <p class="artwork-desc">${escapeHTML(work.desc)}</p>
         <a class="btn btn--accent" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${message}">Contactar por WhatsApp</a>
       </div>
     </div>
     <nav class="pager" aria-label="Otras pinturas">
-      <a class="pager-link" href="${pageBase}detalles/index.html?id=${previous.id}">← ${previous.titulo}</a>
-      <a class="pager-link" href="${pageBase}detalles/index.html?id=${next.id}">${next.titulo} →</a>
+      <a class="pager-link" href="${pageBase}detalles/index.html?id=${previousId}">← ${escapeHTML(previous.titulo)}</a>
+      <a class="pager-link" href="${pageBase}detalles/index.html?id=${nextId}">${escapeHTML(next.titulo)} →</a>
     </nav>`;
   document.title = `${work.titulo} — Yalain Falcón Yanes`;
 }

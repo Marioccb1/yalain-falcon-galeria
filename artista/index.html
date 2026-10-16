@@ -33,8 +33,8 @@
     <div class="artist-hero">
       <h1>Yalain<br>Falcón Yanes</h1>
       <div>
-        <p class="eyebrow">La Habana, Cuba · 1972</p>
-        <p class="section-sub">
+        <p class="eyebrow" id="artistOrigin">La Habana, Cuba · 1972</p>
+        <p class="section-sub" id="artistSummary">
           Diseñador industrial de formación, pintor por necesidad de expresión.
           Su obra se construye por capas: una superficie que habla de proceso,
           cambio y permanencia.
@@ -48,11 +48,11 @@
         <div class="artist-portrait artist-portrait--wide" id="artistPortraitMain"></div>
         <div class="prose" style="align-self:center;">
           <p class="eyebrow eyebrow--accent">En el taller</p>
-          <p style="font-family:'Bodoni Moda',serif; font-size:clamp(20px,2.2vw,28px); font-style:italic; color:var(--ink); line-height:1.45;">
+          <p id="artistQuote" style="font-family:'Bodoni Moda',serif; font-size:clamp(20px,2.2vw,28px); font-style:italic; color:var(--ink); line-height:1.45;">
             «Trabajo por capas. Dejo que la pintura decida cuándo está terminada:
             a veces tarda meses, a veces años.»
           </p>
-          <p style="margin-top:24px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);">
+          <p id="artistQuoteAttribution" style="margin-top:24px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);">
             Yalain Falcón Yanes · La Habana
           </p>
         </div>
@@ -66,7 +66,7 @@
           <p class="eyebrow">01</p>
           <h2>Inicios y formación</h2>
         </div>
-        <div class="prose">
+        <div class="prose" id="artistBiographyContent">
           <p>
             Nacido en La Habana, Cuba, en 1972, Yalain Falcón Yanes se formó como
             diseñador industrial en el Instituto Superior Politécnico de Diseño
@@ -91,7 +91,7 @@
           <p class="eyebrow">02</p>
           <h2>Visión personal</h2>
         </div>
-        <div class="prose">
+        <div class="prose" id="artistVisionContent">
           <p>
             En la década de los noventa, el arte abstracto cubano vivió una
             revitalización significativa. Nuevas generaciones retomaron esta
@@ -118,7 +118,7 @@
         </p>
       </div>
 
-      <div class="prose" style="max-width:78ch; margin-bottom:56px;">
+      <div class="prose" id="seriesDescription" style="max-width:78ch; margin-bottom:56px;">
         <p>
           «Infinito» nace como resultado de una investigación sobre las actitudes y
           las relaciones humanas. En esta serie, el artista pinta números
@@ -194,8 +194,6 @@
     <div id="wallBody"></div>
   </div>
 </div>
-<script src="../assets/js/data.js"></script>
-<script src="../assets/js/common.js"></script>
-<script src="script.js"></script>
+<script type="module" src="../assets/js/public-bootstrap.js" data-page="artist"></script>
 </body>
 </html>
