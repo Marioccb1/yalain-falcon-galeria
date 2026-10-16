@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ficha de pintura — Yalain Falcón Yanes</title>
+  <meta name="description" content="Detalles de las pinturas de la serie Infinito.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-base="../">
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
+    <nav class="nav" id="mainNav">
+      <a href="../index.html">Inicio</a>
+      <a href="../artista/index.html">Artista</a>
+      <a href="../galeria/index.html">Galería</a>
+      <a href="../index.html#exposiciones">Exposiciones</a>
+      <a href="../index.html#contacto">Contacto</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav">Menú</button>
+  </div>
+</header>
+<main>
+<section class="view is-active" id="view-artwork">
+    <div class="page-head">
+      <a class="back" href="../galeria/index.html">← Volver a la galería</a>
+    </div>
+    <div class="section" id="artworkContent" style="border-top:0; padding-top:48px;"></div>
+  </section>
+</main>
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer" id="contacto">
+  <div class="footer-inner">
+    <div>
+      <p class="footer-brand">Yalain Falcón Yanes</p>
+      <p class="footer-note">
+        Pintura contemporánea · Serie «Infinito». La Habana, Cuba.
+        Obra disponible y encargos personalizados.
+      </p>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <a href="tel:+5352932396">+53 52932396</a>
+      <a href="mailto:yalainfalcon@gmail.com">yalainfalcon@gmail.com</a>
+      <a href="https://wa.me/5352932396" target="_blank" rel="noopener">WhatsApp directo</a>
+    </div>
+    <div class="footer-col">
+      <h4>Redes</h4>
+      <a href="https://instagram.com/infinitecubanartist" target="_blank" rel="noopener">Instagram · @infinitecubanartist</a>
+      <a href="https://www.facebook.com/search/top?q=Yalain%20Falc%C3%B3n" target="_blank" rel="noopener">Facebook · Yalain Falcón</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Yalain Falcón Yanes · Todos los derechos reservados</div>
+</footer>
+
+<!-- ================= MODAL: DESCRIPCIÓN ================= -->
+<div class="modal" id="modalDesc" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
+  <div class="modal-panel">
+    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <div id="modalDescBody"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: LIGHTBOX ================= -->
+<div class="modal" id="modalLight" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop modal-backdrop--light" data-close></div>
+  <div class="lightbox-stage">
+    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <div id="lightboxBody"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: VER EN PARED ================= -->
+<div class="modal" id="modalWall" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
+  <div class="wall-stage">
+    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <div id="wallBody"></div>
+  </div>
+</div>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

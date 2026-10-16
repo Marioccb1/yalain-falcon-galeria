@@ -1,0 +1,1 @@
+renderGrid('#fullGrid', works);

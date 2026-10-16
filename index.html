@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yalain Falcón Yanes — Pintura</title>
+  <meta name="description" content="Obra pictórica de Yalain Falcón Yanes. Serie Infinito, 2016 – presente. La Habana, Cuba.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-base="">
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">Yalain Falcón <span>·</span> Yanes</a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html">Inicio</a>
+      <a href="artista/index.html">Artista</a>
+      <a href="galeria/index.html">Galería</a>
+      <a href="index.html#exposiciones">Exposiciones</a>
+      <a href="index.html#contacto">Contacto</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav">Menú</button>
+  </div>
+</header>
+<main>
+<section class="view is-active" id="view-home">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div>
+        <p class="eyebrow eyebrow--accent">Pintura contemporánea · Cuba</p>
+        <h1>Yalain<br>Falcón<br><em>Yanes</em></h1>
+        <p class="hero-lead">
+          La Habana, 1972. Una pintura construida por capas, donde el proceso
+          importa tanto como el resultado. Serie <em>Infinito</em>, 2016 – presente.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="galeria/index.html">Ver galería</a>
+          <a class="btn btn--ghost" href="artista/index.html">Sobre el artista</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div id="heroCanvas"></div>
+        <p class="hero-caption" id="heroCaption"></p>
+      </div>
+    </div>
+
+    <!-- ARTISTA (preview) -->
+    <div class="section" id="artista">
+      <div class="artist-split">
+        <div>
+          <p class="eyebrow">El artista</p>
+          <blockquote class="artist-quote">
+            «Cada número es parte de un proceso.<br>Cada obra, una reflexión sobre la vida.»
+          </blockquote>
+          <p>
+            Formado como diseñador industrial en el Instituto Superior Politécnico
+            de Diseño Industrial (1995), Yalain Falcón Yanes encontró en la pintura
+            un medio más directo de expresión. Su práctica se basa en la
+            experimentación por capas: materiales y técnicas que dejan que cada
+            pieza evolucione con el tiempo.
+          </p>
+          <a class="btn btn--ghost" href="artista/index.html">Conocer su trayectoria</a>
+        </div>
+        <div>
+          <div class="artist-portrait" id="artistPreview"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALERÍA (preview) -->
+    <div class="section" id="galeria">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Obra</p>
+          <h2 class="section-title">Serie <em>Infinito</em></h2>
+        </div>
+        <p class="section-sub">
+          Números consecutivos sobre fondos de color, acompañados de frases
+          motivacionales. Cada pieza es un testimonio visual de crecimiento y
+          transformación.
+        </p>
+      </div>
+      <div class="grid" id="homeGrid"></div>
+      <div style="margin-top:56px">
+        <a class="btn btn--ghost" href="galeria/index.html">Ver todas las obras</a>
+      </div>
+    </div>
+
+    <!-- EXPOSICIONES -->
+    <div class="section" id="exposiciones">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Trayectoria</p>
+          <h2 class="section-title">Exposiciones y<br>presencia internacional</h2>
+        </div>
+        <p class="section-sub">
+          Obra presente en colecciones privadas y proyectos expositivos
+          en Cuba, Estados Unidos, España y México.
+        </p>
+      </div>
+      <div class="exp-list">
+        <div class="exp-row">
+          <div class="exp-year">2016</div>
+          <div class="exp-name">Inicio de la serie «Infinito»</div>
+          <div class="exp-place">La Habana, Cuba</div>
+        </div>
+        <div class="exp-row">
+          <div class="exp-year">2019</div>
+          <div class="exp-name">Exposición colectiva de arte abstracto</div>
+          <div class="exp-place">La Habana, Cuba</div>
+        </div>
+        <div class="exp-row">
+          <div class="exp-year">2021</div>
+          <div class="exp-name">Selección de arte cubano contemporáneo</div>
+          <div class="exp-place">Miami, EE. UU.</div>
+        </div>
+        <div class="exp-row">
+          <div class="exp-year">2022</div>
+          <div class="exp-name">Feria internacional de arte</div>
+          <div class="exp-place">Madrid, España</div>
+        </div>
+        <div class="exp-row">
+          <div class="exp-year">2024</div>
+          <div class="exp-name">«Infinito», exposición individual</div>
+          <div class="exp-place">Ciudad de México, México</div>
+        </div>
+        <div class="exp-row">
+          <div class="exp-year">2025</div>
+          <div class="exp-name">Obra en colecciones privadas</div>
+          <div class="exp-place">EE. UU. · España · México</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer" id="contacto">
+  <div class="footer-inner">
+    <div>
+      <p class="footer-brand">Yalain Falcón Yanes</p>
+      <p class="footer-note">
+        Pintura contemporánea · Serie «Infinito». La Habana, Cuba.
+        Obra disponible y encargos personalizados.
+      </p>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <a href="tel:+5352932396">+53 52932396</a>
+      <a href="mailto:yalainfalcon@gmail.com">yalainfalcon@gmail.com</a>
+      <a href="https://wa.me/5352932396" target="_blank" rel="noopener">WhatsApp directo</a>
+    </div>
+    <div class="footer-col">
+      <h4>Redes</h4>
+      <a href="https://instagram.com/infinitecubanartist" target="_blank" rel="noopener">Instagram · @infinitecubanartist</a>
+      <a href="https://www.facebook.com/search/top?q=Yalain%20Falc%C3%B3n" target="_blank" rel="noopener">Facebook · Yalain Falcón</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Yalain Falcón Yanes · Todos los derechos reservados</div>
+</footer>
+
+<!-- ================= MODAL: DESCRIPCIÓN ================= -->
+<div class="modal" id="modalDesc" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
+  <div class="modal-panel">
+    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <div id="modalDescBody"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: LIGHTBOX ================= -->
+<div class="modal" id="modalLight" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop modal-backdrop--light" data-close></div>
+  <div class="lightbox-stage">
+    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <div id="lightboxBody"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: VER EN PARED ================= -->
+<div class="modal" id="modalWall" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
+  <div class="wall-stage">
+    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <div id="wallBody"></div>
+  </div>
+</div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
