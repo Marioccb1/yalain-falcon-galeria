@@ -10,13 +10,13 @@ web
 
 - Public visitors exploring the paintings and the artist's background.
 - The site administrator, who signs in with an email and password to maintain
-  artwork, biography, and exhibition content.
+  artwork, biography, exhibition content, and contact details.
 
 ## Product Purpose
 
 Present Yalain Falcón Yanes's painting portfolio and provide an authenticated
 content-management area so the administrator can maintain the public gallery,
-artist biography, and exhibition history.
+artist biography, exhibition history, and contact channels.
 
 ## Operating Context
 
@@ -27,7 +27,9 @@ managed content.
 
 ## Capabilities and Constraints
 
-- The CMS manages artworks, the artist biography, and exhibitions.
+- The CMS manages artworks, the artist biography, exhibitions, hero content,
+  the site's text/logo brand presentation, and public contact/social links.
+- Contact and social links have a dedicated CMS route at `/cms/contacto/`.
 - CMS access uses Supabase Auth email-and-password sign-in; public self-service
   account creation is not part of the requested CMS.
 - Only explicitly authorized CMS administrators may change managed content.

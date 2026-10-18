@@ -39,18 +39,27 @@ para previsualizarla localmente.
 ## CMS
 
 El panel está en `cms/index.html`. Inicia el sitio con `npm run dev` y abre
-`/cms/`. El panel usa Supabase Auth con correo y contraseña; no incluye
-registro público ni credenciales de demostración. La autorización de
-administrador también se valida en las políticas RLS, no solo en la interfaz.
+`/cms/`. Los datos de contacto y redes sociales se administran desde
+`/cms/contacto/`. Al iniciar sesión como administrador, el menú público también
+ofrece un acceso directo al panel. El panel usa Supabase Auth con correo y
+contraseña; no incluye registro público ni credenciales de demostración. La
+autorización de administrador también se valida en las políticas RLS, no solo
+en la interfaz.
 
 Antes de usarlo:
 
-1. Ejecuta una vez el SQL de
-   `supabase/migrations/20261016050452_cms_content.sql` en el SQL Editor del
-   proyecto Supabase. Crea las tablas con RLS, el bucket público de imágenes,
-   las políticas para administradores y una copia inicial del contenido actual
-   del sitio. Si utilizas la CLI, enlaza el proyecto y aplica las migraciones
-   con `npx supabase db push`.
+1. En el SQL Editor del proyecto Supabase, ejecuta en orden los archivos
+   `supabase/migrations/20261016050452_cms_content.sql` y
+   `supabase/migrations/20261018023256_add_site_branding_fields.sql` y
+   `supabase/migrations/20261018035338_add_contact_social_fields.sql`. El primero
+   crea las tablas con RLS, el bucket público de imágenes, las políticas para
+   administradores y una copia inicial del contenido actual del sitio. El
+   segundo agrega campos editables para la portada y el logo; el tercero permite
+   editar teléfonos, WhatsApp, correo e Instagram, Facebook y Threads desde el CMS.
+   Si ya aplicaste migraciones anteriores, ejecuta solo las pendientes en ese
+   orden. Si utilizas la CLI,
+   enlaza el proyecto y aplica las migraciones pendientes con
+   `npx supabase db push`.
 2. En Supabase Dashboard, crea la cuenta de administrador en
    **Authentication → Users** con tu correo y una contraseña propia. No actives
    el registro público de usuarios para el CMS.
@@ -69,6 +78,11 @@ Antes de usarlo:
    (`VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`) y ejecuta `npm run dev`.
 
 Las imágenes subidas desde el panel se guardan en el bucket `cms-images` y se
-publican en el sitio. El bucket es público para servir las obras; las políticas
-RLS limitan las cargas, cambios y eliminaciones a las cuentas autorizadas. No
-uses claves `service_role` o secretas en el cliente.
+publican en el sitio. El perfil del artista también permite editar el texto y
+la imagen de portada, cargar un logo y elegir si el encabezado muestra texto,
+logo o ambos, además de las vías de contacto y redes sociales del pie de página.
+La portada enlaza a consultas por WhatsApp y correo; la galería y las fichas
+ofrecen acciones para preguntar por disponibilidad sin depender de un solo canal.
+El bucket es público para servir las obras; las políticas RLS
+limitan las cargas, cambios y eliminaciones a las cuentas autorizadas. No uses
+claves `service_role` o secretas en el cliente.

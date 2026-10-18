@@ -10,11 +10,15 @@ const recordList = $('#recordList');
 const recordForm = $('#recordForm');
 const newRecordButton = $('#newRecordButton');
 const contentLayout = $('#cmsContent');
+const confirmDialog = $('#confirmDialog');
 
-let activeSection = 'artworks';
+const requestedSection = new URLSearchParams(window.location.search).get('section');
+let activeSection = document.body.dataset.cmsSection
+  || (['artworks', 'profile', 'exhibitions'].includes(requestedSection) ? requestedSection : 'artworks');
 let signedInUser = null;
 let activeProfile = null;
 let activeRecords = [];
+const previewObjectUrls = new Map();
 
 const sectionDetails = {
   artworks: {
@@ -23,9 +27,14 @@ const sectionDetails = {
     singular: 'obra',
   },
   profile: {
-    title: 'Biografía',
-    description: 'Edita la información y los textos de la página del artista.',
+    title: 'Portada y artista',
+    description: 'Edita la portada, la identidad del encabezado y el perfil del artista.',
     singular: 'perfil',
+  },
+  contact: {
+    title: 'Contacto y redes',
+    description: 'Administra los teléfonos, el correo y los perfiles sociales que aparecen en el sitio.',
+    singular: 'contacto',
   },
   exhibitions: {
     title: 'Exposiciones',
@@ -66,6 +75,7 @@ async function isCmsAdmin(user) {
 
 function showLogin(message = '') {
   signedInUser = null;
+  $('.skip-link').href = '#loginView';
   loginView.hidden = false;
   adminView.hidden = true;
   loginForm.reset();
@@ -89,6 +99,7 @@ async function enterAdmin(user) {
   }
 
   signedInUser = user;
+  $('.skip-link').href = '#adminMain';
   loginView.hidden = true;
   adminView.hidden = false;
   $('#signedInEmail').textContent = user.email || '';
@@ -131,13 +142,30 @@ function imageFields(name, label, url) {
     ${inputField(name, `${label} · URL`, url, { wide: true })}
     <div class="cms-field cms-field--wide">
       <label for="field-${name}_file">Subir imagen (JPG, PNG, WebP o AVIF; máximo 5 MB)</label>
-      <input id="field-${name}_file" name="${name}_file" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
-      <img class="cms-image-preview" src="${escapeHTML(url || '')}" alt="Vista previa de la imagen" ${url ? '' : 'hidden'}>
+      <input id="field-${name}_file" name="${name}_file" type="file" accept="image/jpeg,image/png,image/webp,image/avif" aria-describedby="hint-${name}_file">
+      <span class="cms-field-hint" id="hint-${name}_file">Selecciona una imagen desde tu dispositivo. Máximo 5 MB.</span>
+      <img class="cms-image-preview" data-preview-for="${name}" src="${escapeHTML(url || '')}" alt="Vista previa de ${escapeHTML(label.toLowerCase())}" ${url ? '' : 'hidden'}>
     </div>
   </div>`;
 }
 
+function selectField(name, label, value, options, { wide = false } = {}) {
+  const choices = options.map(([optionValue, optionLabel]) => `
+    <option value="${escapeHTML(optionValue)}" ${value === optionValue ? 'selected' : ''}>${escapeHTML(optionLabel)}</option>
+  `).join('');
+  return `<div class="cms-field${wide ? ' cms-field--wide' : ''}">
+    <label for="field-${name}">${label}</label>
+    <select id="field-${name}" name="${name}">${choices}</select>
+  </div>`;
+}
+
+function releaseImagePreviews() {
+  previewObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+  previewObjectUrls.clear();
+}
+
 function artworkForm(artwork = {}) {
+  releaseImagePreviews();
   const isNew = !artwork.id;
   recordForm.innerHTML = `
     <h2>${isNew ? 'Añadir obra' : 'Editar obra'}</h2>
@@ -170,6 +198,7 @@ function artworkForm(artwork = {}) {
 }
 
 function exhibitionForm(exhibition = {}) {
+  releaseImagePreviews();
   const isNew = !exhibition.id;
   recordForm.innerHTML = `
     <h2>${isNew ? 'Añadir exposición' : 'Editar exposición'}</h2>
@@ -192,9 +221,23 @@ function exhibitionForm(exhibition = {}) {
 }
 
 function profileForm(profile = {}) {
+  releaseImagePreviews();
   recordForm.innerHTML = `
-    <h2>Biografía del artista</h2>
+    <h2>Portada y artista</h2>
     <div class="cms-form-grid">
+      <p class="cms-form-section">Portada</p>
+      ${inputField('hero_eyebrow', 'Texto superior', profile.hero_eyebrow, { wide: true })}
+      ${textareaField('hero_title', 'Título principal · una línea por renglón', profile.hero_title, { wide: true, rows: 3, required: true })}
+      ${textareaField('hero_intro', 'Texto de presentación', profile.hero_intro, { wide: true, rows: 3 })}
+      ${imageFields('hero_image_url', 'Imagen de portada', profile.hero_image_url)}
+      ${inputField('hero_image_alt', 'Descripción accesible de la imagen', profile.hero_image_alt, { wide: true })}
+      <p class="cms-form-section">Identidad del encabezado</p>
+      ${selectField('header_brand_mode', 'Elementos visibles', profile.header_brand_mode || 'text', [
+        ['text', 'Solo texto'],
+        ['logo', 'Solo logo'],
+        ['both', 'Texto y logo'],
+      ])}
+      ${imageFields('header_logo_url', 'Logo del sitio', profile.header_logo_url)}
       ${inputField('birth_place', 'Lugar de nacimiento', profile.birth_place, { required: true })}
       ${inputField('birth_year', 'Año de nacimiento', profile.birth_year, { type: 'number', min: 1000, max: 9999 })}
       ${textareaField('summary', 'Resumen', profile.summary, { wide: true, rows: 3 })}
@@ -206,24 +249,60 @@ function profileForm(profile = {}) {
       ${textareaField('series_description', 'Descripción de la serie Infinito', profile.series_description, { wide: true })}
     </div>
     <div class="cms-form-actions">
-      <button class="cms-primary" type="submit">Guardar biografía</button>
+      <button class="cms-primary" type="submit">Guardar portada y perfil</button>
     </div>
     <p class="cms-form-message" role="status" aria-live="polite"></p>`;
   bindImagePreview('portrait_url');
+    bindImagePreview('hero_image_url');
+    bindImagePreview('header_logo_url');
+}
+
+function contactForm(profile = {}) {
+  recordForm.innerHTML = `
+    <h2>Datos de contacto</h2>
+    <div class="cms-form-grid">
+      <p class="cms-form-section">Teléfonos y correo</p>
+      ${inputField('contact_phone', 'Teléfono principal', profile.contact_phone, { type: 'tel', placeholder: '+53 52932396' })}
+      ${inputField('contact_phone_secondary', 'Teléfono alternativo', profile.contact_phone_secondary, { type: 'tel', placeholder: 'Opcional' })}
+      ${inputField('contact_email', 'Correo electrónico', profile.contact_email, { type: 'email', placeholder: 'nombre@ejemplo.com' })}
+      ${inputField('whatsapp_number', 'Número de WhatsApp · código de país', profile.whatsapp_number, { type: 'tel', placeholder: '5352932396' })}
+      <p class="cms-field-hint cms-field--wide">Usa el prefijo internacional en los teléfonos y WhatsApp. Deja el teléfono alternativo vacío si no deseas mostrarlo.</p>
+      <p class="cms-form-section">Redes sociales</p>
+      ${inputField('instagram_url', 'Instagram · URL del perfil', profile.instagram_url, { type: 'url', placeholder: 'https://instagram.com/usuario' })}
+      ${inputField('facebook_url', 'Facebook · URL del perfil', profile.facebook_url, { type: 'url', placeholder: 'https://facebook.com/usuario' })}
+      ${inputField('threads_url', 'Threads · URL del perfil', profile.threads_url, { type: 'url', placeholder: 'https://www.threads.com/@usuario' })}
+    </div>
+    <div class="cms-form-actions">
+      <button class="cms-primary" type="submit">Guardar contacto y redes</button>
+    </div>
+    <p class="cms-form-message" role="status" aria-live="polite"></p>`;
 }
 
 function bindImagePreview(name) {
   const urlInput = $(`#field-${name}`, recordForm);
   const fileInput = $(`#field-${name}_file`, recordForm);
-  const preview = $('.cms-image-preview', recordForm);
+  const preview = $(`.cms-image-preview[data-preview-for="${name}"]`, recordForm);
   const update = (src) => {
     preview.src = src;
     preview.hidden = !src;
   };
-  urlInput.addEventListener('input', () => update(urlInput.value.trim()));
+  const releaseObjectUrl = () => {
+    const objectUrl = previewObjectUrls.get(name);
+    if(objectUrl) URL.revokeObjectURL(objectUrl);
+    previewObjectUrls.delete(name);
+  };
+  urlInput.addEventListener('input', () => {
+    releaseObjectUrl();
+    update(urlInput.value.trim());
+  });
   fileInput.addEventListener('change', () => {
     const [file] = fileInput.files;
-    if (file) update(URL.createObjectURL(file));
+    if(file){
+      releaseObjectUrl();
+      const objectUrl = URL.createObjectURL(file);
+      previewObjectUrls.set(name, objectUrl);
+      update(objectUrl);
+    }
   });
 }
 
@@ -235,13 +314,24 @@ function renderRecords(records) {
 
   const isArtwork = activeSection === 'artworks';
   recordList.innerHTML = records.map((record) => {
-    const title = isArtwork ? record.title : record.title;
     const detail = isArtwork
       ? `${record.year} · ${record.dimensions || 'Sin medidas'}`
       : `${record.year} · ${record.place || 'Sin lugar'}`;
-    return `<article class="cms-record-row">
+    let imageURL = '';
+    if(isArtwork && record.image_url){
+      try{
+        const url = new URL(record.image_url, window.location.href);
+        if(['http:','https:'].includes(url.protocol)) imageURL = url.href;
+      }catch{
+        imageURL = '';
+      }
+    }
+    return `<article class="cms-record-row${isArtwork ? ' has-image' : ''}">
+      ${isArtwork ? `<div class="cms-record-thumb">${imageURL
+        ? `<img src="${escapeHTML(imageURL)}" alt="" loading="lazy">`
+        : '<span>Sin imagen</span>'}</div>` : ''}
       <div>
-        <span class="cms-record-title">${escapeHTML(title)}</span>
+        <span class="cms-record-title">${escapeHTML(record.title)}</span>
         ${record.published ? '' : '<span class="cms-record-state">Borrador</span>'}
         <p>${escapeHTML(detail)}</p>
       </div>
@@ -253,7 +343,7 @@ function renderRecords(records) {
 }
 
 async function fetchRecords(section) {
-  if (section === 'profile') {
+  if (section === 'profile' || section === 'contact') {
     const { data, error } = await supabase
       .from('cms_artist_profile')
       .select('*')
@@ -278,12 +368,14 @@ async function loadSection(section) {
   const details = sectionDetails[section];
   $('#sectionTitle').textContent = details.title;
   $('#sectionDescription').textContent = details.description;
-  $('#newRecordButton').hidden = section === 'profile';
-  contentLayout.classList.toggle('is-profile', section === 'profile');
+  $('#newRecordButton').hidden = section === 'profile' || section === 'contact';
+  contentLayout.classList.toggle('is-profile', section === 'profile' || section === 'contact');
+  recordList.hidden = section === 'profile' || section === 'contact';
   document.querySelectorAll('.cms-navigation button').forEach((button) => {
     button.setAttribute('aria-current', String(button.dataset.section === section));
   });
   recordList.innerHTML = '<p class="cms-empty">Cargando contenido…</p>';
+  releaseImagePreviews();
   recordForm.replaceChildren();
   setMainMessage('');
 
@@ -291,6 +383,8 @@ async function loadSection(section) {
     await fetchRecords(section);
     if (section === 'profile') {
       profileForm(activeProfile);
+    } else if (section === 'contact') {
+      contactForm(activeProfile);
     } else {
       renderRecords(activeRecords);
       section === 'artworks' ? artworkForm() : exhibitionForm();
@@ -383,6 +477,13 @@ async function submitExhibition(formData) {
 async function submitProfile(formData) {
   const record = {
     id: 1,
+    hero_eyebrow: formValue(formData, 'hero_eyebrow'),
+    hero_title: formValue(formData, 'hero_title'),
+    hero_intro: formValue(formData, 'hero_intro'),
+    hero_image_url: formValue(formData, 'hero_image_url'),
+    hero_image_alt: formValue(formData, 'hero_image_alt'),
+    header_logo_url: formValue(formData, 'header_logo_url'),
+    header_brand_mode: formValue(formData, 'header_brand_mode'),
     birth_place: formValue(formData, 'birth_place'),
     birth_year: Number(formData.get('birth_year')) || null,
     summary: formValue(formData, 'summary'),
@@ -396,8 +497,39 @@ async function submitProfile(formData) {
   };
   const [file] = recordForm.elements.portrait_url_file.files;
   if (file) record.portrait_url = await uploadImage(file);
+  const [heroFile] = recordForm.elements.hero_image_url_file.files;
+  if(heroFile) record.hero_image_url = await uploadImage(heroFile);
+  const [logoFile] = recordForm.elements.header_logo_url_file.files;
+  if(logoFile) record.header_logo_url = await uploadImage(logoFile);
   const { error } = await supabase.from('cms_artist_profile').upsert(record);
   if (error) throw error;
+}
+
+async function submitContact(formData) {
+  const record = {
+    id: 1,
+    contact_phone: formValue(formData, 'contact_phone'),
+    contact_phone_secondary: formValue(formData, 'contact_phone_secondary'),
+    contact_email: formValue(formData, 'contact_email'),
+    whatsapp_number: formValue(formData, 'whatsapp_number'),
+    instagram_url: formValue(formData, 'instagram_url'),
+    facebook_url: formValue(formData, 'facebook_url'),
+    threads_url: formValue(formData, 'threads_url'),
+    updated_at: new Date().toISOString(),
+  };
+  const { error } = await supabase.from('cms_artist_profile').upsert(record);
+  if (error) throw error;
+}
+
+function confirmDeletion(message) {
+  $('#confirmMessage').textContent = message;
+  confirmDialog.returnValue = '';
+  confirmDialog.showModal();
+  return new Promise((resolve) => {
+    confirmDialog.addEventListener('close', () => {
+      resolve(confirmDialog.returnValue === 'confirm');
+    }, { once: true });
+  });
 }
 
 async function removeRecord(id) {
@@ -458,7 +590,8 @@ recordForm.addEventListener('submit', async (event) => {
     let id;
     if (activeSection === 'artworks') id = await submitArtwork(formData);
     else if (activeSection === 'exhibitions') id = await submitExhibition(formData);
-    else await submitProfile(formData);
+    else if (activeSection === 'profile') await submitProfile(formData);
+    else await submitContact(formData);
 
     await loadSection(activeSection);
     if (id && activeSection !== 'profile') {
@@ -479,7 +612,12 @@ recordForm.addEventListener('click', async (event) => {
   if (!button) return;
   const formData = new FormData(recordForm);
   const id = formData.get('original_id');
-  if (!id || !window.confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
+  if(!id) return;
+  const record = activeRecords.find((item) => item.id === id);
+  const confirmed = await confirmDeletion(
+    `¿Eliminar «${record?.title || 'este registro'}»? Esta acción no se puede deshacer.`,
+  );
+  if(!confirmed) return;
   button.disabled = true;
   try {
     await removeRecord(id);

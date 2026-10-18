@@ -7,10 +7,11 @@
   <title>Administración — Yalain Falcón Yanes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="cms-body">
+  <a class="skip-link" href="#loginView">Saltar al contenido</a>
   <main class="cms-login" id="loginView">
     <a class="cms-brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
     <p class="cms-kicker">Gestión del sitio</p>
@@ -33,8 +34,9 @@
       <p class="cms-nav-label">Contenido</p>
       <nav class="cms-navigation" aria-label="Secciones del CMS">
         <button type="button" data-section="artworks" aria-current="page">Obras</button>
-        <button type="button" data-section="profile">Biografía</button>
+        <button type="button" data-section="profile">Portada y artista</button>
         <button type="button" data-section="exhibitions">Exposiciones</button>
+        <a href="contacto/">Contacto y redes</a>
       </nav>
       <a class="cms-back" href="../index.html">← Ver sitio público</a>
     </aside>
@@ -44,7 +46,7 @@
         <p id="signedInEmail"></p>
         <button type="button" class="cms-quiet" id="signOutButton">Cerrar sesión</button>
       </header>
-      <main class="cms-main">
+      <main class="cms-main" id="adminMain">
         <div class="cms-heading">
           <div>
             <h1 id="sectionTitle">Obras</h1>
@@ -62,6 +64,17 @@
       </main>
     </section>
   </div>
+  <dialog class="cms-dialog" id="confirmDialog" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+    <form method="dialog">
+      <p class="cms-dialog-kicker">Confirmación</p>
+      <h2 id="confirmTitle">Eliminar registro</h2>
+      <p id="confirmMessage">Esta acción no se puede deshacer.</p>
+      <div class="cms-form-actions">
+        <button class="cms-quiet" type="submit" value="cancel">Cancelar</button>
+        <button class="cms-danger" type="submit" value="confirm">Eliminar</button>
+      </div>
+    </form>
+  </dialog>
   <script type="module" src="cms.js"></script>
 </body>
 </html>

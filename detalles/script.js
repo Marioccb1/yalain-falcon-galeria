@@ -1,6 +1,6 @@
-import { $, artworkImgHTML, escapeHTML, pageBase } from '../assets/js/common.js';
+import { $, artworkImgHTML, escapeHTML, getContactHref, pageBase } from '../assets/js/common.js';
 
-const { works, WHATSAPP } = window;
+const { works } = window;
 const artworkId = new URLSearchParams(window.location.search).get('id');
 const artworkIndex = works.findIndex((work) => work.id === artworkId);
 const artworkContent = $('#artworkContent');
@@ -11,7 +11,7 @@ if (artworkIndex === -1) {
   const work = works[artworkIndex];
   const previous = works[(artworkIndex - 1 + works.length) % works.length];
   const next = works[(artworkIndex + 1) % works.length];
-  const message = encodeURIComponent(`Hola Yalain, me interesa la obra "${work.titulo}" (${work.anio}).`);
+  const message = `Hola Yalain, me interesa la obra "${work.titulo}" (${work.anio}).`;
   const previousId = encodeURIComponent(previous.id);
   const nextId = encodeURIComponent(next.id);
   artworkContent.innerHTML = `
@@ -33,7 +33,10 @@ if (artworkIndex === -1) {
           <dt>Serie</dt><dd>Infinito · 2016 – presente</dd>
         </dl>
         <p class="artwork-desc">${escapeHTML(work.desc)}</p>
-        <a class="btn btn--accent" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${message}">Contactar por WhatsApp</a>
+        <div class="contact-actions">
+          <a class="btn btn--accent" target="_blank" rel="noopener" href="${getContactHref('whatsapp', message)}">Consultar esta obra por WhatsApp</a>
+          <a class="btn btn--ghost" href="${getContactHref('email', `Consulta sobre ${work.titulo}`)}">Consultar por correo</a>
+        </div>
       </div>
     </div>
     <nav class="pager" aria-label="Otras pinturas">

@@ -2,13 +2,40 @@ import { $, artworkImgHTML, renderGrid } from './assets/js/common.js';
 
 const { works, IMG } = window;
 renderGrid('#homeGrid', works.slice(0, 3));
+const profile = window.artistProfile;
 const heroWork = works[6] || works[0];
+const heroTitle = $('#heroTitle');
+const titleLines = String(profile.hero_title || 'Yalain\nFalcón\nYanes').split(/\r?\n/);
+let accentLine = -1;
+titleLines.forEach((line, index) => {
+  if(line.trim()) accentLine = index;
+});
+heroTitle.replaceChildren();
+titleLines.forEach((line, index) => {
+  if(index) heroTitle.append(document.createElement('br'));
+  if(index === accentLine && line.trim()){
+    const emphasis = document.createElement('em');
+    emphasis.textContent = line;
+    heroTitle.append(emphasis);
+  }else{
+    heroTitle.append(document.createTextNode(line));
+  }
+});
+$('#heroEyebrow').textContent = profile.hero_eyebrow || 'Pintura contemporánea · Cuba';
+$('#heroIntro').textContent = profile.hero_intro || profile.summary;
+const heroImage = document.createElement('img');
+heroImage.src = profile.hero_image_url || heroWork?.img || IMG.inf31;
+heroImage.alt = profile.hero_image_alt || heroWork?.titulo || 'Obra de la serie Infinito';
+heroImage.fetchPriority = 'high';
+heroImage.decoding = 'async';
+const heroImageFrame = document.createElement('div');
+heroImageFrame.className = 'artwork-img';
+heroImageFrame.append(heroImage);
+$('#heroCanvas').replaceChildren(heroImageFrame);
 if (heroWork) {
-  $('#heroCanvas').innerHTML = artworkImgHTML(heroWork);
   $('#heroCaption').textContent = `${heroWork.titulo} · ${heroWork.anio} · ${heroWork.medidas}`;
 }
 
-const profile = window.artistProfile;
 $('#homeBioSummary').textContent = profile.summary;
 $('#homeQuote').textContent = `«${profile.quote}»`;
 
@@ -34,3 +61,10 @@ exhibitionsList.replaceChildren(...window.exhibitions.map((exhibition) => {
   }
   return row;
 }));
+
+if(window.location.hash){
+  requestAnimationFrame(() => {
+    document.getElementById(window.location.hash.slice(1))
+      ?.scrollIntoView({ block: 'start', behavior: 'auto' });
+  });
+}

@@ -88,6 +88,20 @@ window.works = [
 window.WHATSAPP = '5352932396';
 window.IG = 'https://instagram.com/infinitecubanartist';
 window.artistProfile = {
+  hero_eyebrow: 'Pintura contemporánea · Cuba',
+  hero_title: 'Yalain\nFalcón\nYanes',
+  hero_intro: 'La Habana, 1972. Una pintura construida por capas, donde el proceso importa tanto como el resultado. Serie Infinito, 2016 – presente.',
+  hero_image_url: '',
+  hero_image_alt: 'Obra de la serie Infinito',
+  header_logo_url: '',
+  header_brand_mode: 'text',
+  contact_phone: '+53 52932396',
+  contact_phone_secondary: '',
+  contact_email: 'yalainfalcon@gmail.com',
+  whatsapp_number: '5352932396',
+  instagram_url: 'https://instagram.com/infinitecubanartist',
+  facebook_url: 'https://www.facebook.com/search/top?q=Yalain%20Falc%C3%B3n',
+  threads_url: 'https://www.threads.com/@infinitecubanartist',
   birth_place: 'La Habana, Cuba',
   birth_year: 1972,
   summary: 'Diseñador industrial de formación, pintor por necesidad de expresión. Su obra se construye por capas: una superficie que habla de proceso, cambio y permanencia.',

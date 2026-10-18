@@ -7,10 +7,11 @@
   <meta name="description" content="Detalles de las pinturas de la serie Infinito.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-base="../">
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
@@ -21,10 +22,10 @@
       <a href="../index.html#exposiciones">Exposiciones</a>
       <a href="../index.html#contacto">Contacto</a>
     </nav>
-    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav">Menú</button>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Abrir menú de navegación">Menú</button>
   </div>
 </header>
-<main>
+<main id="mainContent">
 <section class="view is-active" id="view-artwork">
     <div class="page-head">
       <a class="back" href="../galeria/index.html">← Volver a la galería</a>
@@ -58,7 +59,7 @@
 </footer>
 
 <!-- ================= MODAL: DESCRIPCIÓN ================= -->
-<div class="modal" id="modalDesc" role="dialog" aria-modal="true" aria-hidden="true">
+<div class="modal" id="modalDesc" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Descripción de la obra">
   <div class="modal-backdrop modal-backdrop--dark" data-close></div>
   <div class="modal-panel">
     <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
@@ -67,19 +68,19 @@
 </div>
 
 <!-- ================= MODAL: LIGHTBOX ================= -->
-<div class="modal" id="modalLight" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal-backdrop modal-backdrop--light" data-close></div>
+<div class="modal" id="modalLight" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Imagen ampliada">
+  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
   <div class="lightbox-stage">
-    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <button class="modal-close" data-close aria-label="Cerrar imagen ampliada">✕ Cerrar</button>
     <div id="lightboxBody"></div>
   </div>
 </div>
 
 <!-- ================= MODAL: VER EN PARED ================= -->
-<div class="modal" id="modalWall" role="dialog" aria-modal="true" aria-hidden="true">
+<div class="modal" id="modalWall" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Vista de la obra en pared">
   <div class="modal-backdrop modal-backdrop--dark" data-close></div>
   <div class="wall-stage">
-    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
+    <button class="modal-close" data-close aria-label="Cerrar vista en pared">✕ Cerrar</button>
     <div id="wallBody"></div>
   </div>
 </div>

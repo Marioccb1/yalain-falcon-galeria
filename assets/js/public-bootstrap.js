@@ -12,6 +12,7 @@ const pageLoaders = {
 if (!page || !pageLoaders[page]) {
   throw new Error('The page module was not configured.');
 }
+document.body.dataset.page = page;
 
 try {
   const [artworksResult, profileResult, exhibitionsResult] = await Promise.all([

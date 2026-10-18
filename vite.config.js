@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: './',
   build: {
     rollupOptions: {
       input: {
@@ -10,6 +11,7 @@ export default defineConfig({
         gallery: resolve(import.meta.dirname, 'galeria/index.html'),
         details: resolve(import.meta.dirname, 'detalles/index.html'),
         cms: resolve(import.meta.dirname, 'cms/index.html'),
+        cmsContact: resolve(import.meta.dirname, 'cms/contacto/index.html'),
       },
     },
   },
