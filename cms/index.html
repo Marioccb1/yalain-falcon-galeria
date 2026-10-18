@@ -10,13 +10,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="cms-body">
+<body class="cms-body cms-auth-checking">
   <a class="skip-link" href="#loginView">Saltar al contenido</a>
+  <main class="cms-auth-loading" id="authLoading" role="status" aria-live="polite">Verificando tu sesión…</main>
   <main class="cms-login" id="loginView">
     <a class="cms-brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
     <p class="cms-kicker">Gestión del sitio</p>
     <h1>Administrar<br>contenido</h1>
-    <p class="cms-intro">Inicia sesión con la cuenta autorizada para editar obras, biografía y exposiciones.</p>
+    <p class="cms-intro">Inicia sesión con la cuenta autorizada para editar obras, portada, perfil del artista y exposiciones.</p>
     <form id="loginForm" class="cms-login-form">
       <label for="loginEmail">Correo electrónico</label>
       <input id="loginEmail" name="email" type="email" autocomplete="username" required>
@@ -33,10 +34,11 @@
       <a class="cms-brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
       <p class="cms-nav-label">Contenido</p>
       <nav class="cms-navigation" aria-label="Secciones del CMS">
-        <button type="button" data-section="artworks" aria-current="page">Obras</button>
-        <button type="button" data-section="profile">Portada y artista</button>
-        <button type="button" data-section="exhibitions">Exposiciones</button>
-        <a href="contacto/">Contacto y redes</a>
+        <a href="./?section=artworks" data-section="artworks" aria-current="page">Obras</a>
+        <a href="portada/" data-section="cover">Portada</a>
+        <a href="artista/" data-section="artist">Artista</a>
+        <a href="./?section=exhibitions" data-section="exhibitions">Exposiciones</a>
+        <a href="contacto/" data-section="contact">Contacto y redes</a>
       </nav>
       <a class="cms-back" href="../index.html">← Ver sitio público</a>
     </aside>
@@ -49,7 +51,7 @@
       <main class="cms-main" id="adminMain">
         <div class="cms-heading">
           <div>
-            <h1 id="sectionTitle">Obras</h1>
+            <h1 id="sectionTitle" tabindex="-1">Obras</h1>
             <p id="sectionDescription">Administra las piezas que aparecen en la galería.</p>
           </div>
           <button type="button" class="cms-primary" id="newRecordButton">Añadir obra</button>

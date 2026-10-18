@@ -1,6 +1,7 @@
 import { supabase } from '../utils/supabase.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
+const authLoading = $('#authLoading');
 const loginView = $('#loginView');
 const adminView = $('#adminView');
 const loginForm = $('#loginForm');
@@ -12,12 +13,12 @@ const newRecordButton = $('#newRecordButton');
 const contentLayout = $('#cmsContent');
 const confirmDialog = $('#confirmDialog');
 
-const requestedSection = new URLSearchParams(window.location.search).get('section');
-let activeSection = document.body.dataset.cmsSection
-  || (['artworks', 'profile', 'exhibitions'].includes(requestedSection) ? requestedSection : 'artworks');
+const validSections = ['artworks', 'cover', 'artist', 'exhibitions', 'contact'];
+let activeSection = sectionFromLocation();
 let signedInUser = null;
 let activeProfile = null;
 let activeRecords = [];
+let sectionLoadToken = 0;
 const previewObjectUrls = new Map();
 
 const sectionDetails = {
@@ -26,10 +27,15 @@ const sectionDetails = {
     description: 'Administra las piezas que aparecen en la galería.',
     singular: 'obra',
   },
-  profile: {
-    title: 'Portada y artista',
-    description: 'Edita la portada, la identidad del encabezado y el perfil del artista.',
-    singular: 'perfil',
+  cover: {
+    title: 'Portada',
+    description: 'Edita el contenido principal y la identidad visual del encabezado.',
+    singular: 'portada',
+  },
+  artist: {
+    title: 'Artista',
+    description: 'Edita la biografía, el retrato y la información artística.',
+    singular: 'perfil del artista',
   },
   contact: {
     title: 'Contacto y redes',
@@ -63,6 +69,26 @@ function setMainMessage(message, isError = true) {
   mainStatus.classList.toggle('is-error', isError);
 }
 
+function sectionFromLocation() {
+  const pathname = window.location.pathname
+    .replace(/\/index\.html$/i, '')
+    .replace(/\/+$/, '');
+  if (pathname.endsWith('/cms/portada')) return 'cover';
+  if (pathname.endsWith('/cms/artista')) return 'artist';
+  if (pathname.endsWith('/cms/contacto')) return 'contact';
+
+  const section = new URLSearchParams(window.location.search).get('section');
+  if (section === 'profile') return 'cover';
+  if (validSections.includes(section)) return section;
+  return document.body.dataset.cmsSection
+    || (validSections.includes(section) ? section : 'artworks');
+}
+
+function finishAuthLoading() {
+  document.body.classList.remove('cms-auth-checking');
+  authLoading.hidden = true;
+}
+
 async function isCmsAdmin(user) {
   const { data, error } = await supabase
     .from('cms_admins')
@@ -74,11 +100,13 @@ async function isCmsAdmin(user) {
 }
 
 function showLogin(message = '') {
+  sectionLoadToken += 1;
   signedInUser = null;
   $('.skip-link').href = '#loginView';
   loginView.hidden = false;
   adminView.hidden = true;
   loginForm.reset();
+  finishAuthLoading();
   setLoginMessage(message, Boolean(message));
 }
 
@@ -102,6 +130,7 @@ async function enterAdmin(user) {
   $('.skip-link').href = '#adminMain';
   loginView.hidden = true;
   adminView.hidden = false;
+  finishAuthLoading();
   $('#signedInEmail').textContent = user.email || '';
   await loadSection(activeSection);
 }
@@ -116,15 +145,19 @@ function inputField(name, label, value = '', options = {}) {
     step,
     placeholder = '',
     readOnly = false,
+    hint = '',
   } = options;
   const classes = `cms-field${wide ? ' cms-field--wide' : ''}`;
+  const hintId = hint ? `hint-${name}` : '';
   return `<div class="${classes}">
     <label for="field-${name}">${label}</label>
     <input id="field-${name}" name="${name}" type="${type}" value="${escapeHTML(value)}"
       ${required ? 'required' : ''} ${min !== undefined ? `min="${min}"` : ''}
       ${max !== undefined ? `max="${max}"` : ''} ${step !== undefined ? `step="${step}"` : ''}
       ${readOnly ? 'readonly' : ''}
+      ${hintId ? `aria-describedby="${hintId}"` : ''}
       placeholder="${escapeHTML(placeholder)}">
+    ${hintId ? `<span class="cms-field-hint" id="${hintId}">${escapeHTML(hint)}</span>` : ''}
   </div>`;
 }
 
@@ -137,9 +170,11 @@ function textareaField(name, label, value = '', options = {}) {
   </div>`;
 }
 
-function imageFields(name, label, url) {
+function imageFields(name, label, url, { showUrl = true } = {}) {
   return `<div class="cms-form-grid cms-field--wide cms-image-fields">
-    ${inputField(name, `${label} · URL`, url, { wide: true })}
+    ${showUrl
+      ? inputField(name, `${label} · URL`, url, { wide: true })
+      : `<input type="hidden" name="${name}" value="${escapeHTML(url || '')}">`}
     <div class="cms-field cms-field--wide">
       <label for="field-${name}_file">Subir imagen (JPG, PNG, WebP o AVIF; máximo 5 MB)</label>
       <input id="field-${name}_file" name="${name}_file" type="file" accept="image/jpeg,image/png,image/webp,image/avif" aria-describedby="hint-${name}_file">
@@ -183,7 +218,11 @@ function artworkForm(artwork = {}) {
       ${inputField('phrase', 'Frase de la obra', artwork.phrase, { wide: true })}
       ${imageFields('image_url', 'Imagen', artwork.image_url)}
       ${textareaField('description', 'Descripción', artwork.description, { wide: true })}
-      ${inputField('sort_order', 'Orden', artwork.sort_order ?? 0, { type: 'number', min: 0 })}
+      ${inputField('sort_order', 'Orden de aparición', artwork.sort_order ?? 0, {
+        type: 'number',
+        min: 0,
+        hint: 'Posición en la galería: las obras con un número menor aparecen primero.',
+      })}
       <div class="cms-field cms-field--check">
         <input id="field-published" name="published" type="checkbox" ${artwork.published ? 'checked' : ''}>
         <label for="field-published">Publicar en el sitio</label>
@@ -207,7 +246,11 @@ function exhibitionForm(exhibition = {}) {
       ${inputField('year', 'Año', exhibition.year, { type: 'number', min: 1000, max: 9999, required: true })}
       ${inputField('title', 'Nombre', exhibition.title, { required: true, wide: true })}
       ${inputField('place', 'Lugar', exhibition.place, { wide: true })}
-      ${inputField('sort_order', 'Orden', exhibition.sort_order ?? 0, { type: 'number', min: 0 })}
+      ${inputField('sort_order', 'Orden de aparición', exhibition.sort_order ?? 0, {
+        type: 'number',
+        min: 0,
+        hint: 'Posición en la trayectoria: las exposiciones con un número menor aparecen primero.',
+      })}
       <div class="cms-field cms-field--check">
         <input id="field-published" name="published" type="checkbox" ${exhibition.published ? 'checked' : ''}>
         <label for="field-published">Publicar en el sitio</label>
@@ -220,12 +263,11 @@ function exhibitionForm(exhibition = {}) {
     <p class="cms-form-message" role="status" aria-live="polite"></p>`;
 }
 
-function profileForm(profile = {}) {
+function coverForm(profile = {}) {
   releaseImagePreviews();
   recordForm.innerHTML = `
-    <h2>Portada y artista</h2>
+    <h2>Contenido de portada</h2>
     <div class="cms-form-grid">
-      <p class="cms-form-section">Portada</p>
       ${inputField('hero_eyebrow', 'Texto superior', profile.hero_eyebrow, { wide: true })}
       ${textareaField('hero_title', 'Título principal · una línea por renglón', profile.hero_title, { wide: true, rows: 3, required: true })}
       ${textareaField('hero_intro', 'Texto de presentación', profile.hero_intro, { wide: true, rows: 3 })}
@@ -238,23 +280,37 @@ function profileForm(profile = {}) {
         ['both', 'Texto y logo'],
       ])}
       ${imageFields('header_logo_url', 'Logo del sitio', profile.header_logo_url)}
+    </div>
+    <div class="cms-form-actions">
+      <button class="cms-primary" type="submit">Guardar portada</button>
+    </div>
+    <p class="cms-form-message" role="status" aria-live="polite"></p>`;
+  bindImagePreview('hero_image_url');
+  bindImagePreview('header_logo_url');
+}
+
+function artistForm(profile = {}) {
+  releaseImagePreviews();
+  recordForm.innerHTML = `
+    <h2>Perfil del artista</h2>
+    <div class="cms-form-grid">
+      <p class="cms-form-section">Información personal</p>
       ${inputField('birth_place', 'Lugar de nacimiento', profile.birth_place, { required: true })}
       ${inputField('birth_year', 'Año de nacimiento', profile.birth_year, { type: 'number', min: 1000, max: 9999 })}
       ${textareaField('summary', 'Resumen', profile.summary, { wide: true, rows: 3 })}
       ${textareaField('quote', 'Cita', profile.quote, { wide: true, rows: 3 })}
       ${inputField('quote_attribution', 'Atribución de la cita', profile.quote_attribution, { wide: true })}
-      ${imageFields('portrait_url', 'Retrato', profile.portrait_url)}
+      ${imageFields('portrait_url', 'Retrato', profile.portrait_url, { showUrl: false })}
+      <p class="cms-form-section">Biografía y visión artística</p>
       ${textareaField('biography', 'Inicios y formación', profile.biography, { wide: true })}
       ${textareaField('artistic_vision', 'Visión personal', profile.artistic_vision, { wide: true })}
       ${textareaField('series_description', 'Descripción de la serie Infinito', profile.series_description, { wide: true })}
     </div>
     <div class="cms-form-actions">
-      <button class="cms-primary" type="submit">Guardar portada y perfil</button>
+      <button class="cms-primary" type="submit">Guardar perfil del artista</button>
     </div>
     <p class="cms-form-message" role="status" aria-live="polite"></p>`;
   bindImagePreview('portrait_url');
-    bindImagePreview('hero_image_url');
-    bindImagePreview('header_logo_url');
 }
 
 function contactForm(profile = {}) {
@@ -291,10 +347,12 @@ function bindImagePreview(name) {
     if(objectUrl) URL.revokeObjectURL(objectUrl);
     previewObjectUrls.delete(name);
   };
-  urlInput.addEventListener('input', () => {
-    releaseObjectUrl();
-    update(urlInput.value.trim());
-  });
+  if (urlInput) {
+    urlInput.addEventListener('input', () => {
+      releaseObjectUrl();
+      update(urlInput.value.trim());
+    });
+  }
   fileInput.addEventListener('change', () => {
     const [file] = fileInput.files;
     if(file){
@@ -343,7 +401,7 @@ function renderRecords(records) {
 }
 
 async function fetchRecords(section) {
-  if (section === 'profile' || section === 'contact') {
+  if (section === 'cover' || section === 'artist' || section === 'contact') {
     const { data, error } = await supabase
       .from('cms_artist_profile')
       .select('*')
@@ -363,16 +421,21 @@ async function fetchRecords(section) {
   activeRecords = data;
 }
 
-async function loadSection(section) {
+async function loadSection(section, { focusHeading = false } = {}) {
+  const loadToken = ++sectionLoadToken;
   activeSection = section;
   const details = sectionDetails[section];
   $('#sectionTitle').textContent = details.title;
   $('#sectionDescription').textContent = details.description;
-  $('#newRecordButton').hidden = section === 'profile' || section === 'contact';
-  contentLayout.classList.toggle('is-profile', section === 'profile' || section === 'contact');
-  recordList.hidden = section === 'profile' || section === 'contact';
-  document.querySelectorAll('.cms-navigation button').forEach((button) => {
-    button.setAttribute('aria-current', String(button.dataset.section === section));
+  document.title = `${details.title} — Administración — Yalain Falcón Yanes`;
+  if (focusHeading) $('#sectionTitle').focus();
+  $('#newRecordButton').hidden = !['artworks', 'exhibitions'].includes(section);
+  const isProfileSection = ['cover', 'artist', 'contact'].includes(section);
+  contentLayout.classList.toggle('is-profile', isProfileSection);
+  recordList.hidden = isProfileSection;
+  document.querySelectorAll('.cms-navigation [data-section]').forEach((link) => {
+    if (link.dataset.section === section) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
   });
   recordList.innerHTML = '<p class="cms-empty">Cargando contenido…</p>';
   releaseImagePreviews();
@@ -381,8 +444,11 @@ async function loadSection(section) {
 
   try {
     await fetchRecords(section);
-    if (section === 'profile') {
-      profileForm(activeProfile);
+    if (loadToken !== sectionLoadToken) return;
+    if (section === 'cover') {
+      coverForm(activeProfile);
+    } else if (section === 'artist') {
+      artistForm(activeProfile);
     } else if (section === 'contact') {
       contactForm(activeProfile);
     } else {
@@ -390,6 +456,7 @@ async function loadSection(section) {
       section === 'artworks' ? artworkForm() : exhibitionForm();
     }
   } catch (error) {
+    if (loadToken !== sectionLoadToken) return;
     setMainMessage(`No se pudo cargar ${details.title.toLowerCase()}: ${error.message}`);
     recordList.replaceChildren();
     recordForm.replaceChildren();
@@ -425,6 +492,11 @@ function formValue(formData, name) {
   return String(formData.get(name) || '').trim();
 }
 
+function formFile(formData, name) {
+  const file = formData.get(name);
+  return file instanceof File && file.size > 0 ? file : null;
+}
+
 async function submitArtwork(formData) {
   const currentId = formData.get('original_id');
   const record = {
@@ -447,7 +519,7 @@ async function submitArtwork(formData) {
   if (!record.id || !record.title || !record.number || !Number.isInteger(record.year)) {
     throw new Error('Completa el identificador, título, número y año.');
   }
-  const [file] = recordForm.elements.image_url_file.files;
+  const file = formFile(formData, 'image_url_file');
   if (file) record.image_url = await uploadImage(file);
   if (!record.image_url) throw new Error('Añade una URL o sube una imagen para la obra.');
   const { error } = await supabase.from('cms_artworks').upsert(record);
@@ -474,7 +546,7 @@ async function submitExhibition(formData) {
   return record.id;
 }
 
-async function submitProfile(formData) {
+async function submitCover(formData) {
   const record = {
     id: 1,
     hero_eyebrow: formValue(formData, 'hero_eyebrow'),
@@ -484,6 +556,19 @@ async function submitProfile(formData) {
     hero_image_alt: formValue(formData, 'hero_image_alt'),
     header_logo_url: formValue(formData, 'header_logo_url'),
     header_brand_mode: formValue(formData, 'header_brand_mode'),
+    updated_at: new Date().toISOString(),
+  };
+  const heroFile = formFile(formData, 'hero_image_url_file');
+  if (heroFile) record.hero_image_url = await uploadImage(heroFile);
+  const logoFile = formFile(formData, 'header_logo_url_file');
+  if (logoFile) record.header_logo_url = await uploadImage(logoFile);
+  const { error } = await supabase.from('cms_artist_profile').upsert(record);
+  if (error) throw error;
+}
+
+async function submitArtist(formData) {
+  const record = {
+    id: 1,
     birth_place: formValue(formData, 'birth_place'),
     birth_year: Number(formData.get('birth_year')) || null,
     summary: formValue(formData, 'summary'),
@@ -495,12 +580,8 @@ async function submitProfile(formData) {
     series_description: formValue(formData, 'series_description'),
     updated_at: new Date().toISOString(),
   };
-  const [file] = recordForm.elements.portrait_url_file.files;
+  const file = formFile(formData, 'portrait_url_file');
   if (file) record.portrait_url = await uploadImage(file);
-  const [heroFile] = recordForm.elements.hero_image_url_file.files;
-  if(heroFile) record.hero_image_url = await uploadImage(heroFile);
-  const [logoFile] = recordForm.elements.header_logo_url_file.files;
-  if(logoFile) record.header_logo_url = await uploadImage(logoFile);
   const { error } = await supabase.from('cms_artist_profile').upsert(record);
   if (error) throw error;
 }
@@ -533,11 +614,12 @@ function confirmDeletion(message) {
 }
 
 async function removeRecord(id) {
+  const { singular } = sectionDetails[activeSection];
   const table = activeSection === 'artworks' ? 'cms_artworks' : 'cms_exhibitions';
   const { error } = await supabase.from(table).delete().eq('id', id);
   if (error) throw error;
   await loadSection(activeSection);
-  setMainMessage('Registro eliminado.', false);
+  setMainMessage(`${singular} eliminada.`, false);
 }
 
 loginForm.addEventListener('submit', async (event) => {
@@ -560,10 +642,6 @@ loginForm.addEventListener('submit', async (event) => {
   }
 });
 
-document.querySelectorAll('.cms-navigation button').forEach((button) => {
-  button.addEventListener('click', () => loadSection(button.dataset.section));
-});
-
 newRecordButton.addEventListener('click', () => {
   activeSection === 'artworks' ? artworkForm() : exhibitionForm();
   $('.cms-editor', adminView).scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -581,26 +659,51 @@ recordList.addEventListener('click', (event) => {
 
 recordForm.addEventListener('submit', async (event) => {
   event.preventDefault();
+  const submittedSection = activeSection;
   const button = $('button[type="submit"]', recordForm);
   const formMessage = $('.cms-form-message', recordForm);
   button.disabled = true;
   formMessage.textContent = 'Guardando…';
+  formMessage.classList.remove('is-error');
   try {
     const formData = new FormData(recordForm);
+    const isNew = !formData.get('original_id');
     let id;
-    if (activeSection === 'artworks') id = await submitArtwork(formData);
-    else if (activeSection === 'exhibitions') id = await submitExhibition(formData);
-    else if (activeSection === 'profile') await submitProfile(formData);
+    if (submittedSection === 'artworks') id = await submitArtwork(formData);
+    else if (submittedSection === 'exhibitions') id = await submitExhibition(formData);
+    else if (submittedSection === 'cover') await submitCover(formData);
+    else if (submittedSection === 'artist') await submitArtist(formData);
     else await submitContact(formData);
 
-    await loadSection(activeSection);
-    if (id && activeSection !== 'profile') {
-      const record = activeRecords.find((item) => item.id === id);
-      activeSection === 'artworks' ? artworkForm(record) : exhibitionForm(record);
+    const messages = {
+      artworks: isNew ? 'Obra añadida.' : 'Obra actualizada.',
+      exhibitions: isNew ? 'Exposición añadida.' : 'Exposición actualizada.',
+      cover: 'Portada actualizada.',
+      artist: 'Perfil del artista actualizado.',
+      contact: 'Contacto y redes actualizados.',
+    };
+    const message = messages[submittedSection];
+    if (activeSection !== submittedSection) {
+      setMainMessage(`Guardado: ${message}`, false);
+      return;
     }
-    setMainMessage('Cambios guardados.', false);
+
+    await loadSection(submittedSection);
+    if (id) {
+      const record = activeRecords.find((item) => item.id === id);
+      submittedSection === 'artworks' ? artworkForm(record) : exhibitionForm(record);
+    }
+    const successMessage = $('.cms-form-message', recordForm);
+    if (successMessage) successMessage.textContent = message;
+    setMainMessage(message, false);
   } catch (error) {
-    formMessage.textContent = `No se pudo guardar: ${error.message}`;
+    const message = `No se pudo guardar: ${error.message}`;
+    if (activeSection === submittedSection) {
+      formMessage.textContent = message;
+      formMessage.classList.add('is-error');
+    } else {
+      setMainMessage(`${sectionDetails[submittedSection].singular}: ${message}`);
+    }
   } finally {
     const currentButton = $('button[type="submit"]', recordForm);
     if (currentButton) currentButton.disabled = false;
@@ -625,6 +728,28 @@ recordForm.addEventListener('click', async (event) => {
     setMainMessage(`No se pudo eliminar: ${error.message}`);
   } finally {
     button.disabled = false;
+  }
+});
+
+$('.cms-navigation').addEventListener('click', (event) => {
+  const link = event.target.closest('a[data-section]');
+  if (!link || event.defaultPrevented || event.button !== 0
+    || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+  const section = link.dataset.section;
+  if (!validSections.includes(section)) return;
+  const destination = new URL(link.href, window.location.href);
+  if (destination.origin !== window.location.origin) return;
+  event.preventDefault();
+  if (section === activeSection) return;
+  window.history.pushState({ section }, '', destination);
+  loadSection(section, { focusHeading: true });
+});
+
+window.addEventListener('popstate', () => {
+  const section = sectionFromLocation();
+  if (validSections.includes(section) && section !== activeSection) {
+    loadSection(section, { focusHeading: true });
   }
 });
 

@@ -322,7 +322,8 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
   background:var(--paper); border:1px solid rgba(0,0,0,.14);
 }
 .artist-portrait img{
-  width:100%; height:100%; object-fit:contain; filter:grayscale(18%) contrast(1.03);
+  display:block; width:100%; height:100%; object-fit:cover; object-position:center;
+  filter:grayscale(18%) contrast(1.03);
 }
 
 /* ============================================================
@@ -447,6 +448,42 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
 .gallery-inquiry h2{ margin:0 0 6px; font:400 clamp(24px,3vw,34px)/1.15 'Bodoni Moda',serif; }
 .gallery-inquiry p{ margin:0; color:var(--ink-soft); }
 .gallery-inquiry-actions,.contact-actions{ display:flex; flex-wrap:wrap; gap:10px; }
+.contact-section{ scroll-margin-top:calc(var(--header-h) + 16px); }
+.contact-form{ width:min(100%,860px); }
+.contact-form-fields{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 24px; }
+.contact-field{ display:grid; align-content:start; gap:8px; }
+.contact-field span{
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft);
+}
+.contact-field input,.contact-field textarea{
+  width:100%; min-height:50px; padding:12px 14px; border:1px solid var(--line);
+  border-radius:0; background:var(--paper); color:var(--ink); font:inherit;
+}
+.contact-field textarea{ min-height:150px; resize:vertical; line-height:1.55; }
+.contact-field input:focus-visible,.contact-field textarea:focus-visible{
+  outline:2px solid var(--accent); outline-offset:3px;
+}
+.contact-field--wide{ grid-column:1/-1; }
+.contact-form-help,.contact-form-status{ color:var(--ink-soft); font-size:13px; line-height:1.5; }
+.contact-form-help{ margin:14px 0 0; }
+.contact-form-actions{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-top:18px; }
+.contact-form-status:empty{ display:none; }
+.contact-form-actions .contact-form-status{ flex:1 1 100%; margin:0; }
+.contact-form-status.is-error{ color:#913c24; }
+.whatsapp-float{
+  position:fixed; right:max(20px,env(safe-area-inset-right));
+  bottom:max(20px,env(safe-area-inset-bottom)); z-index:110;
+  display:inline-flex; min-height:54px; align-items:center; justify-content:center; gap:10px;
+  padding:0 20px; border:1px solid #147244; border-radius:999px;
+  background:#18804f; color:#fff; font-size:12px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase;
+  box-shadow:0 8px 24px rgba(18,49,34,.24); transition:background .2s, transform .2s;
+}
+.whatsapp-float[hidden]{ display:none !important; }
+.whatsapp-float:hover{ background:#11683f; transform:translateY(-2px); }
+.whatsapp-float:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; }
+.whatsapp-float-icon{ display:block; width:22px; height:22px; }
+.whatsapp-float-icon svg{ display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 
 /* ============================================================
    RESPONSIVE
@@ -532,6 +569,17 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
   .menu-toggle{ min-width:44px; padding:8px 6px; font-size:9px; }
   .hero-actions .btn{ font-size:8px; letter-spacing:.08em; }
   .card-actions{ gap:6px; }
+}
+@media(max-width:639px){
+  .contact-form-fields{ grid-template-columns:1fr; gap:16px; }
+  .contact-field--wide{ grid-column:auto; }
+  .whatsapp-float{
+    right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom));
+    width:56px; min-height:56px; padding:0;
+  }
+  .whatsapp-float>span:last-child{
+    position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;
+  }
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{ scroll-behavior:auto !important; transition:none !important; }

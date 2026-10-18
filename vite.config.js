@@ -12,6 +12,8 @@ export default defineConfig({
         details: resolve(import.meta.dirname, 'detalles/index.html'),
         cms: resolve(import.meta.dirname, 'cms/index.html'),
         cmsContact: resolve(import.meta.dirname, 'cms/contacto/index.html'),
+        cmsCover: resolve(import.meta.dirname, 'cms/portada/index.html'),
+        cmsArtist: resolve(import.meta.dirname, 'cms/artista/index.html'),
       },
     },
   },

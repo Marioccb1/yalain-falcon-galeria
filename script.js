@@ -1,4 +1,4 @@
-import { $, artworkImgHTML, renderGrid } from './assets/js/common.js';
+import { $, artworkImgHTML, getContactHref, renderGrid } from './assets/js/common.js';
 
 const { works, IMG } = window;
 renderGrid('#homeGrid', works.slice(0, 3));
@@ -44,6 +44,35 @@ artistPreview.src = profile.portrait_url || IMG.artistPreview;
 artistPreview.alt = 'Retrato de Yalain Falcón Yanes en su taller';
 artistPreview.loading = 'lazy';
 $('#artistPreview').replaceChildren(artistPreview);
+
+const contactForm = $('#artistContactForm');
+contactForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const status = $('#contactFormStatus');
+  const formData = new FormData(contactForm);
+  const name = String(formData.get('name') || '').trim();
+  const email = String(formData.get('email') || '').trim();
+  const message = String(formData.get('message') || '').trim();
+  const subject = `Mensaje desde el sitio · ${name}`;
+  const mailto = getContactHref('email', subject);
+
+  if (!mailto) {
+    status.textContent = 'El artista aún no ha configurado un correo de contacto.';
+    status.classList.add('is-error');
+    return;
+  }
+
+  const body = `Nombre: ${name}\nCorreo de respuesta: ${email}\n\nMensaje:\n${message}`;
+  status.textContent = 'Se abrirá tu aplicación de correo para que revises y envíes el mensaje.';
+  status.classList.remove('is-error');
+  window.location.href = `${mailto}&body=${encodeURIComponent(body)}`;
+});
+
+const contactEmail = String(profile.contact_email || '').trim();
+const contactHelp = $('#contactFormHelp');
+if (contactEmail && contactHelp) {
+  contactHelp.textContent = `El mensaje se preparará para ${contactEmail} en tu aplicación de correo.`;
+}
 
 const exhibitionsList = $('#homeExhibitionsList');
 exhibitionsList.replaceChildren(...window.exhibitions.map((exhibition) => {

@@ -39,12 +39,24 @@ para previsualizarla localmente.
 ## CMS
 
 El panel está en `cms/index.html`. Inicia el sitio con `npm run dev` y abre
-`/cms/`. Los datos de contacto y redes sociales se administran desde
+`/cms/`. El contenido de portada, el perfil del artista y los datos de contacto
+y redes sociales están separados en `/cms/portada/`, `/cms/artista/` y
 `/cms/contacto/`. Al iniciar sesión como administrador, el menú público también
 ofrece un acceso directo al panel. El panel usa Supabase Auth con correo y
 contraseña; no incluye registro público ni credenciales de demostración. La
 autorización de administrador también se valida en las políticas RLS, no solo
 en la interfaz.
+
+La navegación interna del CMS cambia de sección sin recargar la página. La URL
+sigue reflejando cada sección y admite recarga, enlaces directos y los botones
+atrás/adelante del navegador. Al abrir el panel, se muestra un estado de carga
+mientras se comprueba la sesión, evitando que aparezca brevemente el formulario
+de inicio de sesión a administradores que ya están autenticados.
+
+El sitio público incluye un acceso flotante a WhatsApp y un formulario de
+contacto en Inicio. El formulario prepara un correo dirigido a la dirección
+configurada desde `/cms/contacto/`; el visitante lo revisa y lo envía desde su
+aplicación de correo predeterminada.
 
 Antes de usarlo:
 
@@ -81,6 +93,8 @@ Las imágenes subidas desde el panel se guardan en el bucket `cms-images` y se
 publican en el sitio. El perfil del artista también permite editar el texto y
 la imagen de portada, cargar un logo y elegir si el encabezado muestra texto,
 logo o ambos, además de las vías de contacto y redes sociales del pie de página.
+El retrato del artista se reemplaza subiendo una imagen desde el formulario; no
+es necesario pegar una URL.
 La portada enlaza a consultas por WhatsApp y correo; la galería y las fichas
 ofrecen acciones para preguntar por disponibilidad sin depender de un solo canal.
 El bucket es público para servir las obras; las políticas RLS

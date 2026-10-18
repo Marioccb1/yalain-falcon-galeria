@@ -29,7 +29,10 @@ managed content.
 
 - The CMS manages artworks, the artist biography, exhibitions, hero content,
   the site's text/logo brand presentation, and public contact/social links.
-- Contact and social links have a dedicated CMS route at `/cms/contacto/`.
+- Cover content, artist biography, and contact/social links have dedicated CMS
+  routes at `/cms/portada/`, `/cms/artista/`, and `/cms/contacto/`.
+- Public visitors can use a persistent WhatsApp shortcut or prepare a message
+  for the artist through a contact form addressed to the CMS-configured email.
 - CMS access uses Supabase Auth email-and-password sign-in; public self-service
   account creation is not part of the requested CMS.
 - Only explicitly authorized CMS administrators may change managed content.
