@@ -1,7 +1,7 @@
 import './data.js';
 import { supabase } from '../../utils/supabase.js';
 
-const page = document.querySelector('script[data-page]')?.dataset.page;
+const page = document.body.dataset.page;
 const pageLoaders = {
   home: () => import('../../script.js'),
   artist: () => import('../../artista/script.js'),
@@ -12,8 +12,6 @@ const pageLoaders = {
 if (!page || !pageLoaders[page]) {
   throw new Error('The page module was not configured.');
 }
-document.body.dataset.page = page;
-
 try {
   const [artworksResult, profileResult, exhibitionsResult] = await Promise.all([
     supabase
