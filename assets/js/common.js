@@ -446,16 +446,25 @@ function decorateContactActions() {
 }
 
 function createWhatsappShortcut() {
-  if (document.querySelector('.whatsapp-float')) return;
-  const link = document.createElement('a');
-  link.className = 'whatsapp-float';
+  const header = $('.header-inner');
+  const navigation = $('#mainNav', header);
+  const link = document.querySelector('.whatsapp-shortcut') || document.createElement('a');
+  link.className = 'whatsapp-shortcut';
   link.dataset.contactCta = 'whatsapp';
   link.dataset.contactMessage = 'Hola, me interesa conocer más sobre las obras de Yalain Falcón Yanes.';
   link.setAttribute('aria-label', 'Contactar por WhatsApp');
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
-  link.innerHTML = `<span class="whatsapp-float-icon">${footerIcons.whatsapp}</span><span>WhatsApp</span>`;
-  document.body.append(link);
+  if (!link.querySelector('.whatsapp-shortcut-icon')) {
+    link.innerHTML = `<span class="whatsapp-shortcut-icon" aria-hidden="true">${footerIcons.whatsapp}</span><span>WhatsApp</span>`;
+  }
+  const mobileNavigation = window.matchMedia('(max-width: 899px)');
+  const placeShortcut = () => {
+    if (mobileNavigation.matches) navigation.append(link);
+    else header.insertBefore(link, $('.menu-toggle', header));
+  };
+  placeShortcut();
+  mobileNavigation.addEventListener('change', placeShortcut);
 }
 
 function decorateFooterLinks() {

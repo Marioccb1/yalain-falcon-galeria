@@ -470,20 +470,144 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
 .contact-form-status:empty{ display:none; }
 .contact-form-actions .contact-form-status{ flex:1 1 100%; margin:0; }
 .contact-form-status.is-error{ color:#913c24; }
-.whatsapp-float{
-  position:fixed; right:max(20px,env(safe-area-inset-right));
-  bottom:max(20px,env(safe-area-inset-bottom)); z-index:110;
-  display:inline-flex; min-height:54px; align-items:center; justify-content:center; gap:10px;
-  padding:0 20px; border:1px solid #147244; border-radius:999px;
-  background:#18804f; color:#fff; font-size:12px; font-weight:600;
-  letter-spacing:.08em; text-transform:uppercase;
-  box-shadow:0 8px 24px rgba(18,49,34,.24); transition:background .2s, transform .2s;
+
+/* ============================================================
+   PORTADA — composición editorial
+   ============================================================ */
+.view-home .hero-art{
+  display:flex; flex-direction:column; gap:14px; min-width:0; margin:0;
 }
-.whatsapp-float[hidden]{ display:none !important; }
-.whatsapp-float:hover{ background:#11683f; transform:translateY(-2px); }
-.whatsapp-float:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; }
-.whatsapp-float-icon{ display:block; width:22px; height:22px; }
-.whatsapp-float-icon svg{ display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.home-hero-mat{
+  display:flex; flex:1; min-height:0; padding:clamp(16px,3vw,42px);
+  background:#fffdf9; box-shadow:0 28px 52px -34px rgba(26,23,20,.5);
+}
+.view-home #heroCanvas{ display:flex; width:100%; min-height:0; flex:1; }
+.view-home #heroCanvas .artwork-img{
+  width:100%; max-width:none; height:min(28svh,240px); min-height:180px;
+  aspect-ratio:auto; margin:0; background:var(--paper);
+}
+.view-home #heroCanvas .artwork-img img{ height:100%; object-fit:cover; }
+.view-home .hero-caption{
+  position:static; margin:0; padding:0; background:transparent;
+  font-size:10px; text-align:left;
+}
+.home-facts{
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.home-facts-inner{
+  max-width:1280px; margin:0 auto; padding:26px 20px;
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 18px;
+}
+.home-fact{ display:grid; align-content:start; gap:4px; }
+.home-fact-value{
+  font-family:'Bodoni Moda',serif; font-size:clamp(18px,2vw,24px);
+  line-height:1.2; color:var(--ink);
+}
+.home-fact-label{
+  font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
+}
+.home-gallery-more{ margin-top:40px; }
+.view-home #homeGrid{ gap:36px 20px; }
+.view-home #homeGrid .card{ min-width:0; }
+.view-home #homeGrid .card .artwork-img{ aspect-ratio:4/5; }
+.view-home #homeGrid .card-title{ font-size:clamp(19px,2vw,24px); }
+.view-home .wall-feature{
+  padding:64px 20px; background:#efeae0; border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.wall-feature-inner{
+  max-width:1280px; margin:0 auto; display:grid;
+  grid-template-columns:minmax(0,1fr); gap:36px; align-items:center;
+}
+.wall-feature-inner .section-title{ max-width:14ch; margin-bottom:18px; }
+.wall-feature-copy{ max-width:46ch; margin:0 0 28px; color:var(--ink-soft); }
+.wall-room{
+  position:relative; width:100%; aspect-ratio:5/4; overflow:hidden;
+  background:#e4dccd;
+}
+.wall-room::before{
+  position:absolute; inset:auto 0 0; height:22%; content:""; background:#cfc3ae;
+}
+.wall-room-art{
+  position:absolute; z-index:1; top:12%; left:50%; width:32%; max-width:220px;
+  aspect-ratio:4/5; padding:10px; transform:translateX(-50%);
+  background:#fffdf9; box-shadow:0 18px 30px -12px rgba(26,23,20,.5);
+}
+.wall-room-art .artwork-img{ width:100%; height:100%; aspect-ratio:auto; border:0; }
+.wall-room-art .artwork-img img{ width:100%; height:100%; object-fit:cover; }
+.wall-room-sofa{
+  position:absolute; z-index:2; left:18%; right:18%; bottom:12%; height:22%;
+  background:#5f574d;
+}
+.wall-room-sofa::before{
+  position:absolute; inset:-28% 5% 55%; content:""; background:#746a5d;
+}
+.wall-room-sofa::after{
+  position:absolute; left:8%; right:8%; bottom:-8px; height:8px; content:"";
+  background:#453e36;
+}
+.artist-preview-mat{
+  width:min(100%,560px); justify-self:center; padding:clamp(14px,2vw,28px);
+  background:#fffdf9; box-shadow:0 24px 46px -32px rgba(26,23,20,.45);
+}
+.artist-preview-mat .artist-portrait{ width:100%; }
+.view-home .contact-section{
+  padding:64px 20px; background:#1b1815; color:#f1ede6;
+}
+.contact-layout{
+  max-width:1280px; margin:0 auto; display:grid;
+  grid-template-columns:minmax(0,1fr); gap:44px;
+}
+.contact-copy .eyebrow{ color:#d07a58; }
+.contact-title{
+  max-width:10ch; margin:0 0 24px;
+  font:400 clamp(40px,5.5vw,72px)/1 'Bodoni Moda',serif;
+}
+.contact-lead{ max-width:44ch; margin:0 0 30px; color:#b9b0a3; }
+.contact-direct-actions{ display:flex; flex-wrap:wrap; gap:10px; }
+.contact-email-action,.contact-submit{
+  background:transparent; border-color:#f1ede6; color:#f1ede6;
+}
+.contact-email-action:hover,.contact-submit:hover{ background:#f1ede6; color:#1b1815; }
+.contact-form-intro{ margin:0 0 8px; color:#b9b0a3; font-size:14px; }
+.view-home .contact-form-help,
+.view-home .contact-field span{ color:#b9b0a3; }
+.view-home .contact-form-help{ margin:0 0 18px; }
+.view-home .contact-field input,
+.view-home .contact-field textarea{
+  padding:12px 0; border:0; border-bottom:1px solid #6e665c;
+  background:transparent; color:#f1ede6;
+}
+.view-home .contact-field input:focus-visible,
+.view-home .contact-field textarea:focus-visible{
+  outline:2px solid #d07a58; outline-offset:4px;
+}
+.view-home .contact-form-status{ color:#b9b0a3; }
+.view-home .contact-form-status.is-error{ color:#ffb4a8; }
+body[data-page="home"] .site-footer{
+  border-top:1px solid #3a342d; background:#1b1815; color:#b9b0a3;
+}
+body[data-page="home"] .footer-brand{ color:#f1ede6; }
+body[data-page="home"] .footer-note,
+body[data-page="home"] .footer-col h4,
+body[data-page="home"] .footer-bottom{ color:#b9b0a3; }
+body[data-page="home"] .footer-col a:hover{ color:#d07a58; }
+body[data-page="home"] .footer-link-icon{ color:#d07a58; }
+
+.whatsapp-shortcut{
+  display:inline-flex; flex:0 0 auto; min-width:44px; min-height:44px;
+  align-items:center; justify-content:center; gap:8px; padding:0 12px;
+  border:1px solid #147244; background:#18804f; color:#fff;
+  font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  transition:background .2s, transform .2s;
+}
+.nav .whatsapp-shortcut{ color:#fff; border-color:#147244; }
+.whatsapp-shortcut[hidden]{ display:none !important; }
+.whatsapp-shortcut:hover{ background:#11683f; transform:translateY(-1px); }
+.nav .whatsapp-shortcut:hover{ color:#fff; border-color:#11683f; }
+.whatsapp-shortcut:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; }
+.whatsapp-shortcut-icon{ display:block; width:20px; height:20px; }
+.whatsapp-shortcut-icon svg{ display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 
 /* ============================================================
    RESPONSIVE
@@ -501,13 +625,32 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
   .artist-hero{ padding:48px 32px 64px; grid-template-columns:1fr .8fr; gap:40px; }
   .artist-hero h1{ font-size:clamp(56px,7vw,88px); }
   .page-head{ padding:48px 32px 0; }
-  .artwork-grid{ grid-template-columns:1fr 1fr; gap:40px; }
   .pager{ margin-top:72px; padding-top:32px; }
   .footer-inner{ padding:64px 32px 36px; grid-template-columns:1fr 1fr; gap:36px; }
   .footer-inner>:first-child{ grid-column:1/-1; }
   .footer-bottom{ padding:0 32px 36px; }
   .exp-row{ grid-template-columns:80px 1fr; gap:10px 20px; padding:22px 0; }
   .exp-place{ grid-column:2; }
+  .home-facts-inner{ padding:28px 32px; gap:24px; }
+  .view-home .wall-feature{ padding:80px 32px; }
+  .view-home .contact-section{ padding:80px 32px; }
+  .contact-layout{ gap:48px; }
+}
+@media (min-width:800px){
+  .artwork-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:40px; }
+}
+@media (min-width:900px){
+  .home-facts-inner{ grid-template-columns:repeat(4,minmax(0,1fr)); gap:32px; }
+  .view-home #homeGrid{ grid-template-columns:repeat(12,minmax(0,1fr)); gap:48px 28px; }
+  .view-home #homeGrid .card:first-child{ grid-column:span 6; grid-row:span 2; }
+  .view-home #homeGrid .card:nth-child(n+2){ grid-column:span 3; }
+  .view-home .wall-feature{ padding:96px 32px; }
+  .wall-feature-inner{ grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:80px; }
+  .view-home .contact-section{ padding:104px 32px; }
+  .contact-layout{ grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:80px; }
+  .view-home .hero-art{ padding:clamp(18px,3.5vh,40px); }
+  .view-home .home-hero-mat{ padding:clamp(24px,4vw,64px); }
+  .view-home #heroCanvas .artwork-img{ height:100%; min-height:0; }
 }
 @media (min-width:900px){
   :root{ --header-h:72px; }
@@ -554,12 +697,28 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
   .gallery-inquiry{ align-items:flex-start; }
   .gallery-inquiry-actions{ width:100%; }
   .gallery-inquiry-actions .btn{ flex:1 1 100%; }
+  .view-home .contact-direct-actions{ align-items:stretch; flex-direction:column; }
+  .view-home .contact-direct-actions .btn{ width:100%; }
   .wall-stage{ width:calc(100vw - 20px); max-height:calc(100svh - 40px); }
   .room-svg{ max-height:calc(100svh - 150px); }
   .wall-caption{ padding:12px 14px; font-size:9px; letter-spacing:.12em; }
 }
+@media (min-width:640px) and (max-width:899px){
+  .view-home #homeGrid .card:first-child{ grid-column:1/-1; }
+}
 @media (max-width:860px){
   .nav{ width:100%; }
+}
+@media (max-width:899px){
+  .nav .whatsapp-shortcut{
+    align-self:stretch; justify-content:center; width:100%; min-height:48px;
+    margin-top:12px; padding:0 16px; border:1px solid #147244;
+  }
+  .nav .whatsapp-shortcut>span:last-child{
+    position:static; width:auto; height:auto; overflow:visible;
+    clip:auto; white-space:normal;
+  }
+  .nav.is-open .whatsapp-shortcut{ border-bottom:1px solid #147244; }
 }
 @media (max-width:420px){
   .brand{ font-size:11px; letter-spacing:.08em; gap:5px; }
@@ -573,13 +732,6 @@ section[id],.section[id],footer[id]{ scroll-margin-top:calc(var(--header-h) + 16
 @media(max-width:639px){
   .contact-form-fields{ grid-template-columns:1fr; gap:16px; }
   .contact-field--wide{ grid-column:auto; }
-  .whatsapp-float{
-    right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom));
-    width:56px; min-height:56px; padding:0;
-  }
-  .whatsapp-float>span:last-child{
-    position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;
-  }
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{ scroll-behavior:auto !important; transition:none !important; }

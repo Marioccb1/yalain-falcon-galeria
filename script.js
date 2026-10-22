@@ -1,7 +1,8 @@
 import { $, artworkImgHTML, getContactHref, renderGrid } from './assets/js/common.js';
 
 const { works, IMG } = window;
-renderGrid('#homeGrid', works.slice(0, 3));
+renderGrid('#homeGrid', works.slice(0, 5));
+$('#homeWorkCount').textContent = works.length;
 const profile = window.artistProfile;
 const heroWork = works[6] || works[0];
 const heroTitle = $('#heroTitle');
@@ -34,6 +35,8 @@ heroImageFrame.append(heroImage);
 $('#heroCanvas').replaceChildren(heroImageFrame);
 if (heroWork) {
   $('#heroCaption').textContent = `${heroWork.titulo} · ${heroWork.anio} · ${heroWork.medidas}`;
+  $('#wallFeatureButton').dataset.wall = heroWork.id;
+  $('#wallFeatureArtwork').innerHTML = artworkImgHTML(heroWork);
 }
 
 $('#homeBioSummary').textContent = profile.summary;
