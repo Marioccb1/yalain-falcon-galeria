@@ -24,7 +24,6 @@ if (artworkIndex === -1) {
         </div>
       </div>
       <div>
-        <p class="eyebrow eyebrow--accent">Serie Infinito</p>
         <h1 class="artwork-title">${escapeHTML(work.titulo)}</h1>
         <dl class="spec">
           <dt>Año</dt><dd>${escapeHTML(work.anio)}</dd>

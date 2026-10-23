@@ -1,1 +1,27 @@
 @import url("../assets/css/site.css");
+
+#view-artwork>.section {
+  padding-top: 48px;
+  border-top: 0;
+}
+
+#view-artwork .artwork-canvas {
+  width: 100%;
+  max-width: 600px;
+}
+
+#view-artwork .artwork-img {
+  aspect-ratio: 1;
+  background: transparent;
+  border: 0;
+}
+
+#view-artwork .artwork-img img {
+  object-fit: fill;
+}
+
+@media (max-width: 639px) {
+  #view-artwork>.section {
+    padding-top: 36px;
+  }
+}

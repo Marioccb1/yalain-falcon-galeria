@@ -150,7 +150,7 @@ function inputField(name, label, value = '', options = {}) {
   const classes = `cms-field${wide ? ' cms-field--wide' : ''}`;
   const hintId = hint ? `hint-${name}` : '';
   return `<div class="${classes}">
-    <label for="field-${name}">${label}</label>
+    <label for="field-${name}">${label}${required ? ' <span class="cms-required" aria-hidden="true">*</span>' : ''}</label>
     <input id="field-${name}" name="${name}" type="${type}" value="${escapeHTML(value)}"
       ${required ? 'required' : ''} ${min !== undefined ? `min="${min}"` : ''}
       ${max !== undefined ? `max="${max}"` : ''} ${step !== undefined ? `step="${step}"` : ''}
@@ -162,35 +162,45 @@ function inputField(name, label, value = '', options = {}) {
 }
 
 function textareaField(name, label, value = '', options = {}) {
-  const { wide = false, rows = 5, required = false } = options;
+  const { wide = false, rows = 5, required = false, hint = '' } = options;
   const classes = `cms-field${wide ? ' cms-field--wide' : ''}`;
+  const hintId = hint ? `hint-${name}` : '';
   return `<div class="${classes}">
-    <label for="field-${name}">${label}</label>
-    <textarea id="field-${name}" name="${name}" rows="${rows}" ${required ? 'required' : ''}>${escapeHTML(value)}</textarea>
+    <label for="field-${name}">${label}${required ? ' <span class="cms-required" aria-hidden="true">*</span>' : ''}</label>
+    <textarea id="field-${name}" name="${name}" rows="${rows}" ${required ? 'required' : ''}
+      ${hintId ? `aria-describedby="${hintId}"` : ''}>${escapeHTML(value)}</textarea>
+    ${hintId ? `<span class="cms-field-hint" id="${hintId}">${escapeHTML(hint)}</span>` : ''}
   </div>`;
 }
 
 function imageFields(name, label, url, { showUrl = true } = {}) {
   return `<div class="cms-form-grid cms-field--wide cms-image-fields">
     ${showUrl
-      ? inputField(name, `${label} · URL`, url, { wide: true })
+      ? inputField(name, `URL pública de ${label.toLowerCase()}`, url, {
+        type: 'url',
+        wide: true,
+        placeholder: 'https://',
+        hint: 'Puedes pegar una URL pública o elegir un archivo; si eliges un archivo, se usará al guardar.',
+      })
       : `<input type="hidden" name="${name}" value="${escapeHTML(url || '')}">`}
     <div class="cms-field cms-field--wide">
-      <label for="field-${name}_file">Subir imagen (JPG, PNG, WebP o AVIF; máximo 5 MB)</label>
+      <label for="field-${name}_file">${showUrl ? 'O subir un archivo' : `Subir ${label.toLowerCase()}`}</label>
       <input id="field-${name}_file" name="${name}_file" type="file" accept="image/jpeg,image/png,image/webp,image/avif" aria-describedby="hint-${name}_file">
-      <span class="cms-field-hint" id="hint-${name}_file">Selecciona una imagen desde tu dispositivo. Máximo 5 MB.</span>
+      <span class="cms-field-hint" id="hint-${name}_file">JPG, PNG, WebP o AVIF; hasta 5 MB. El archivo seleccionado reemplaza la URL al guardar.</span>
       <img class="cms-image-preview" data-preview-for="${name}" src="${escapeHTML(url || '')}" alt="Vista previa de ${escapeHTML(label.toLowerCase())}" ${url ? '' : 'hidden'}>
     </div>
   </div>`;
 }
 
-function selectField(name, label, value, options, { wide = false } = {}) {
+function selectField(name, label, value, options, { wide = false, hint = '' } = {}) {
   const choices = options.map(([optionValue, optionLabel]) => `
     <option value="${escapeHTML(optionValue)}" ${value === optionValue ? 'selected' : ''}>${escapeHTML(optionLabel)}</option>
   `).join('');
+  const hintId = hint ? `hint-${name}` : '';
   return `<div class="cms-field${wide ? ' cms-field--wide' : ''}">
     <label for="field-${name}">${label}</label>
-    <select id="field-${name}" name="${name}">${choices}</select>
+    <select id="field-${name}" name="${name}" ${hintId ? `aria-describedby="${hintId}"` : ''}>${choices}</select>
+    ${hintId ? `<span class="cms-field-hint" id="${hintId}">${escapeHTML(hint)}</span>` : ''}
   </div>`;
 }
 
@@ -204,24 +214,34 @@ function artworkForm(artwork = {}) {
   const isNew = !artwork.id;
   recordForm.innerHTML = `
     <h2>${isNew ? 'Añadir obra' : 'Editar obra'}</h2>
+    <p class="cms-form-intro">Los campos con <span class="cms-required" aria-hidden="true">*</span> son obligatorios. La ficha reúne los datos, la imagen y la publicación de la obra.</p>
     <input type="hidden" name="original_id" value="${escapeHTML(artwork.id || '')}">
     <div class="cms-form-grid">
-      ${inputField('id', 'Identificador del enlace', artwork.id || `obra-${crypto.randomUUID()}`, { required: true, placeholder: 'inf-41', readOnly: !isNew })}
+      <h3 class="cms-form-section">Datos de la obra</h3>
       ${inputField('title', 'Título', artwork.title, { required: true })}
-      ${inputField('number', 'Número', artwork.number, { required: true })}
+      ${inputField('number', 'Número de la serie', artwork.number, { required: true })}
       ${inputField('year', 'Año', artwork.year, { type: 'number', min: 1000, max: 9999, required: true })}
-      ${inputField('dimensions', 'Medidas', artwork.dimensions)}
-      ${inputField('technique', 'Técnica', artwork.technique)}
+      ${inputField('dimensions', 'Medidas', artwork.dimensions, { placeholder: '100 × 80 cm' })}
+      ${inputField('technique', 'Técnica o materiales', artwork.technique)}
+      ${inputField('id', 'Identificador del enlace', artwork.id || `obra-${crypto.randomUUID()}`, {
+        required: true,
+        placeholder: 'inf-41',
+        readOnly: !isNew,
+        hint: 'Forma parte del enlace de la ficha. Elige un identificador breve y fácil de reconocer.',
+      })}
+      <h3 class="cms-form-section">Imagen y descripción</h3>
+      ${imageFields('image_url', 'Imagen', artwork.image_url)}
+      ${inputField('phrase', 'Frase de la obra', artwork.phrase, { wide: true })}
+      ${textareaField('description', 'Descripción', artwork.description, { wide: true, hint: 'Este texto aparece en la descripción ampliada de la obra.' })}
+      <h3 class="cms-form-section">Colores complementarios</h3>
       ${inputField('color', 'Color principal', artwork.color || '#A6482A', { type: 'color' })}
       ${inputField('color2', 'Color secundario', artwork.color2 || '#7C3018', { type: 'color' })}
       ${inputField('foreground_color', 'Color de texto', artwork.foreground_color || '#F6EFE6', { type: 'color' })}
-      ${inputField('phrase', 'Frase de la obra', artwork.phrase, { wide: true })}
-      ${imageFields('image_url', 'Imagen', artwork.image_url)}
-      ${textareaField('description', 'Descripción', artwork.description, { wide: true })}
-      ${inputField('sort_order', 'Orden de aparición', artwork.sort_order ?? 0, {
+      <h3 class="cms-form-section">Publicación</h3>
+      ${inputField('sort_order', 'Orden en la galería', artwork.sort_order ?? 0, {
         type: 'number',
         min: 0,
-        hint: 'Posición en la galería: las obras con un número menor aparecen primero.',
+        hint: 'Las obras con un número menor aparecen primero.',
       })}
       <div class="cms-field cms-field--check">
         <input id="field-published" name="published" type="checkbox" ${artwork.published ? 'checked' : ''}>
@@ -241,8 +261,10 @@ function exhibitionForm(exhibition = {}) {
   const isNew = !exhibition.id;
   recordForm.innerHTML = `
     <h2>${isNew ? 'Añadir exposición' : 'Editar exposición'}</h2>
+    <p class="cms-form-intro">Añade los datos de la exposición y elige si debe aparecer en la página pública.</p>
     <input type="hidden" name="original_id" value="${escapeHTML(exhibition.id || '')}">
     <div class="cms-form-grid">
+      <h3 class="cms-form-section">Datos de la exposición</h3>
       ${inputField('year', 'Año', exhibition.year, { type: 'number', min: 1000, max: 9999, required: true })}
       ${inputField('title', 'Nombre', exhibition.title, { required: true, wide: true })}
       ${inputField('place', 'Lugar', exhibition.place, { wide: true })}
@@ -251,6 +273,7 @@ function exhibitionForm(exhibition = {}) {
         min: 0,
         hint: 'Posición en la trayectoria: las exposiciones con un número menor aparecen primero.',
       })}
+      <h3 class="cms-form-section">Publicación</h3>
       <div class="cms-field cms-field--check">
         <input id="field-published" name="published" type="checkbox" ${exhibition.published ? 'checked' : ''}>
         <label for="field-published">Publicar en el sitio</label>
@@ -267,18 +290,23 @@ function coverForm(profile = {}) {
   releaseImagePreviews();
   recordForm.innerHTML = `
     <h2>Contenido de portada</h2>
+    <p class="cms-form-intro">Edita el título, la presentación y las imágenes que se muestran al entrar al sitio.</p>
     <div class="cms-form-grid">
+      <h3 class="cms-form-section">Texto de portada</h3>
       ${inputField('hero_eyebrow', 'Texto superior', profile.hero_eyebrow, { wide: true })}
       ${textareaField('hero_title', 'Título principal · una línea por renglón', profile.hero_title, { wide: true, rows: 3, required: true })}
       ${textareaField('hero_intro', 'Texto de presentación', profile.hero_intro, { wide: true, rows: 3 })}
       ${imageFields('hero_image_url', 'Imagen de portada', profile.hero_image_url)}
-      ${inputField('hero_image_alt', 'Descripción accesible de la imagen', profile.hero_image_alt, { wide: true })}
-      <p class="cms-form-section">Identidad del encabezado</p>
+      ${inputField('hero_image_alt', 'Descripción de la imagen para lectores de pantalla', profile.hero_image_alt, {
+        wide: true,
+        hint: 'Describe lo que se ve en la imagen. Si es solo decorativa, deja este campo vacío.',
+      })}
+      <h3 class="cms-form-section">Identidad del encabezado</h3>
       ${selectField('header_brand_mode', 'Elementos visibles', profile.header_brand_mode || 'text', [
         ['text', 'Solo texto'],
         ['logo', 'Solo logo'],
         ['both', 'Texto y logo'],
-      ])}
+      ], { hint: 'Elige si el encabezado muestra el nombre, el logo o ambos.' })}
       ${imageFields('header_logo_url', 'Logo del sitio', profile.header_logo_url)}
     </div>
     <div class="cms-form-actions">
@@ -293,15 +321,16 @@ function artistForm(profile = {}) {
   releaseImagePreviews();
   recordForm.innerHTML = `
     <h2>Perfil del artista</h2>
+    <p class="cms-form-intro">Estos datos forman la página «Artista». El lugar de nacimiento es obligatorio; los demás campos son opcionales.</p>
     <div class="cms-form-grid">
-      <p class="cms-form-section">Información personal</p>
+      <h3 class="cms-form-section">Información personal</h3>
       ${inputField('birth_place', 'Lugar de nacimiento', profile.birth_place, { required: true })}
       ${inputField('birth_year', 'Año de nacimiento', profile.birth_year, { type: 'number', min: 1000, max: 9999 })}
-      ${textareaField('summary', 'Resumen', profile.summary, { wide: true, rows: 3 })}
-      ${textareaField('quote', 'Cita', profile.quote, { wide: true, rows: 3 })}
+      ${textareaField('summary', 'Resumen', profile.summary, { wide: true, rows: 3, hint: 'Texto breve que presenta al artista en la página.' })}
+      ${textareaField('quote', 'Cita', profile.quote, { wide: true, rows: 3, hint: 'Una frase que se mostrará destacada junto al perfil.' })}
       ${inputField('quote_attribution', 'Atribución de la cita', profile.quote_attribution, { wide: true })}
       ${imageFields('portrait_url', 'Retrato', profile.portrait_url, { showUrl: false })}
-      <p class="cms-form-section">Biografía y visión artística</p>
+      <h3 class="cms-form-section">Biografía y visión artística</h3>
       ${textareaField('biography', 'Inicios y formación', profile.biography, { wide: true })}
       ${textareaField('artistic_vision', 'Visión personal', profile.artistic_vision, { wide: true })}
       ${textareaField('series_description', 'Descripción de la serie Infinito', profile.series_description, { wide: true })}
@@ -316,14 +345,15 @@ function artistForm(profile = {}) {
 function contactForm(profile = {}) {
   recordForm.innerHTML = `
     <h2>Datos de contacto</h2>
+    <p class="cms-form-intro">Actualiza los canales que aparecen en el sitio. Deja en blanco cualquier dato que no quieras mostrar.</p>
     <div class="cms-form-grid">
-      <p class="cms-form-section">Teléfonos y correo</p>
+      <h3 class="cms-form-section">Teléfonos y correo</h3>
       ${inputField('contact_phone', 'Teléfono principal', profile.contact_phone, { type: 'tel', placeholder: '+53 52932396' })}
       ${inputField('contact_phone_secondary', 'Teléfono alternativo', profile.contact_phone_secondary, { type: 'tel', placeholder: 'Opcional' })}
       ${inputField('contact_email', 'Correo electrónico', profile.contact_email, { type: 'email', placeholder: 'nombre@ejemplo.com' })}
       ${inputField('whatsapp_number', 'Número de WhatsApp · código de país', profile.whatsapp_number, { type: 'tel', placeholder: '5352932396' })}
-      <p class="cms-field-hint cms-field--wide">Usa el prefijo internacional en los teléfonos y WhatsApp. Deja el teléfono alternativo vacío si no deseas mostrarlo.</p>
-      <p class="cms-form-section">Redes sociales</p>
+      <p class="cms-field-hint cms-field--wide">Usa el prefijo internacional, por ejemplo +53. Para WhatsApp, incluye el código de país sin espacios ni signos.</p>
+      <h3 class="cms-form-section">Redes sociales</h3>
       ${inputField('instagram_url', 'Instagram · URL del perfil', profile.instagram_url, { type: 'url', placeholder: 'https://instagram.com/usuario' })}
       ${inputField('facebook_url', 'Facebook · URL del perfil', profile.facebook_url, { type: 'url', placeholder: 'https://facebook.com/usuario' })}
       ${inputField('threads_url', 'Threads · URL del perfil', profile.threads_url, { type: 'url', placeholder: 'https://www.threads.com/@usuario' })}

@@ -1,1 +1,46 @@
 @import url("../assets/css/site.css");
+
+#view-gallery .artist-hero {
+  max-width: none;
+  padding-inline: max(32px, calc((100vw - 1336px) / 2));
+  background: var(--paper);
+}
+
+#view-gallery .gallery-works {
+  border-top: 0;
+}
+
+#view-gallery .gallery-skeleton::before {
+  aspect-ratio: 1;
+}
+
+#view-gallery .artwork-img {
+  aspect-ratio: 1;
+  background: transparent;
+  border: 0;
+}
+
+#view-gallery .artwork-img img {
+  object-fit: fill;
+}
+
+#view-gallery .card-canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+#view-gallery .gallery-inquiry {
+  padding: 32px 36px;
+  border: 0;
+  background: var(--paper);
+}
+
+@media (max-width: 639px) {
+  #view-gallery .artist-hero {
+    padding-inline: 20px;
+  }
+
+  #view-gallery .gallery-inquiry {
+    padding: 24px 20px;
+  }
+}

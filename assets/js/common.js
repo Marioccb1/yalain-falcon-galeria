@@ -1,4 +1,7 @@
 import { supabase } from '../../utils/supabase.js';
+import salaSceneUrl from '../img/sala.webp';
+import cuartoSceneUrl from '../img/cuarto.webp';
+import comedorSceneUrl from '../img/comedor.webp';
 
 const pageBase = document.body.dataset.base || '';
 const works = window.works;
@@ -50,80 +53,11 @@ function renderGrid(selector, list){
   }
 }
 
-/* ============================================================
-   SALA (VER EN PARED) — SVG
-   ============================================================ */
-function roomSVG(w){
-  return `
-  <svg class="room-svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHTML(w.titulo)} en una pared">
-    <defs>
-      <linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#F7F2E9"/><stop offset="1" stop-color="#E8E0D2"/>
-      </linearGradient>
-      <linearGradient id="floorG" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#C9AC83"/><stop offset="1" stop-color="#A3855F"/>
-      </linearGradient>
-      <linearGradient id="gloss" x1="0" y1="0" x2="0.6" y2="1">
-        <stop offset="0" stop-color="#ffffff" stop-opacity=".22"/>
-        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-      </linearGradient>
-      <clipPath id="artClip"><rect x="700" y="148" width="400" height="500"/></clipPath>
-    </defs>
-
-    <!-- pared -->
-    <rect width="1600" height="720" fill="url(#wallG)"/>
-    <!-- suelo -->
-    <rect y="720" width="1600" height="280" fill="url(#floorG)"/>
-    <g stroke="rgba(90,68,42,.16)" stroke-width="2">
-      <line x1="0" y1="782" x2="1600" y2="782"/>
-      <line x1="0" y1="862" x2="1600" y2="862"/>
-      <line x1="0" y1="944" x2="1600" y2="944"/>
-      <line x1="250" y1="720" x2="110" y2="1000"/>
-      <line x1="690" y1="720" x2="630" y2="1000"/>
-      <line x1="1130" y1="720" x2="1190" y2="1000"/>
-    </g>
-    <!-- zócalo -->
-    <rect y="698" width="1600" height="24" fill="#E3D9C8"/>
-    <rect y="696" width="1600" height="3" fill="rgba(0,0,0,.10)"/>
-
-    <!-- sofá -->
-    <g>
-      <rect x="140" y="556" width="430" height="150" fill="#8C8377"/>
-      <rect x="120" y="690" width="470" height="90" fill="#9D9486"/>
-      <rect x="120" y="770" width="470" height="16" fill="#7A7267"/>
-      <rect x="160" y="786" width="26" height="44" fill="#5E574D"/>
-      <rect x="524" y="786" width="26" height="44" fill="#5E574D"/>
-      <rect x="300" y="640" width="130" height="70" fill="#A79E90"/>
-    </g>
-
-    <!-- lámpara de pie -->
-    <g>
-      <rect x="1512" y="520" width="7" height="330" fill="#3A362F"/>
-      <path d="M1458 520 L1573 520 L1552 448 L1479 448 Z" fill="#E3D9C6" stroke="#3A362F" stroke-width="3"/>
-      <rect x="1470" y="846" width="90" height="10" fill="#3A362F"/>
-    </g>
-
-    <!-- planta -->
-    <g transform="translate(1330,600)">
-      <path d="M0 128 C -96 62 -84 -34 -12 -66 C 2 -2 -8 62 0 128 Z" fill="#5F6E4E"/>
-      <path d="M0 128 C 96 62 84 -34 12 -66 C -2 -2 8 62 0 128 Z" fill="#6E7E59"/>
-      <path d="M0 128 C -34 42 -22 -46 0 -100 C 22 -46 34 42 0 128 Z" fill="#546345"/>
-      <path d="M-58 128 L58 128 L44 236 L-44 236 Z" fill="#B9A88E"/>
-      <rect x="-62" y="120" width="124" height="16" fill="#A8977D"/>
-    </g>
-
-    <!-- sombra del cuadro -->
-    <rect x="712" y="160" width="400" height="500" fill="rgba(20,16,10,.18)"/>
-
-    <!-- cuadro real (imagen) -->
-    <g clip-path="url(#artClip)">
-      <image href="${escapeHTML(safeImageURL(w.img))}" x="700" y="148" width="400" height="500"
-             preserveAspectRatio="xMidYMid slice" crossorigin="anonymous"/>
-    </g>
-    <rect x="700" y="148" width="400" height="500" fill="url(#gloss)"/>
-    <rect x="700" y="148" width="400" height="500" fill="none" stroke="rgba(0,0,0,.20)" stroke-width="2"/>
-  </svg>`;
-}
+const wallScenes = [
+  { id:'sala', label:'Sala', src:salaSceneUrl },
+  { id:'cuarto', label:'Habitación', src:cuartoSceneUrl },
+  { id:'comedor', label:'Comedor', src:comedorSceneUrl },
+];
 
 /* ============================================================
    MODALES
@@ -174,21 +108,46 @@ function openWall(id){
   const w = works.find(x => x.id === id);
   if(!w) return;
   $('#wallBody').innerHTML = `
-    ${roomSVG(w)}
+    <div class="wall-preview">
+      <img class="wall-scene-image" src="${wallScenes[0].src}" alt="" aria-hidden="true">
+      <div class="wall-frame">${artworkImgHTML(w)}</div>
+    </div>
+    <div class="wall-scene-picker" role="group" aria-label="Elige el espacio donde ver la pintura">
+      <p class="wall-scene-heading">Elige un espacio</p>
+      <div class="wall-scene-options">
+        ${wallScenes.map((scene, index) => `
+          <button class="wall-scene-option" type="button" data-wall-scene="${scene.id}" aria-pressed="${index === 0}">
+            <img src="${scene.src}" alt="" loading="lazy">
+            <span>${scene.label}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
     <div class="wall-caption">
       <span>${escapeHTML(w.titulo)} · ${escapeHTML(w.anio)}</span>
+      <span data-wall-scene-announcement aria-live="polite">Vista seleccionada: ${wallScenes[0].label}</span>
       <span>${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</span>
     </div>
   `;
   openModal(modalWall);
 }
 
-
+function selectWallScene(id){
+  const scene = wallScenes.find((option) => option.id === id);
+  if(!scene) return;
+  $('.wall-scene-image', modalWall).src = scene.src;
+  $$('[data-wall-scene]', modalWall).forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.wallScene === scene.id));
+  });
+  $('[data-wall-scene-announcement]', modalWall).textContent = `Vista seleccionada: ${scene.label}`;
+}
 
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
   if (target.closest('[data-close]')) { closeModals(); return; }
+  const wallScene = target.closest('[data-wall-scene]');
+  if (wallScene) { selectWallScene(wallScene.dataset.wallScene); return; }
   const light = target.closest('[data-light]');
   if (light) { openLightbox(light.dataset.light); return; }
   const description = target.closest('[data-desc]');
