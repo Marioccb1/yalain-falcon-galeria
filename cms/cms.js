@@ -1,4 +1,5 @@
 import { supabase } from '../utils/supabase.js';
+import { displayImageURL } from '../utils/images.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const authLoading = $('#authLoading');
@@ -173,21 +174,16 @@ function textareaField(name, label, value = '', options = {}) {
   </div>`;
 }
 
-function imageFields(name, label, url, { showUrl = true } = {}) {
+function imageFields(name, label, url) {
   return `<div class="cms-form-grid cms-field--wide cms-image-fields">
-    ${showUrl
-      ? inputField(name, `URL pública de ${label.toLowerCase()}`, url, {
-        type: 'url',
-        wide: true,
-        placeholder: 'https://',
-        hint: 'Puedes pegar una URL pública o elegir un archivo; si eliges un archivo, se usará al guardar.',
-      })
-      : `<input type="hidden" name="${name}" value="${escapeHTML(url || '')}">`}
+    <input type="hidden" name="${name}" value="${escapeHTML(url || '')}">
     <div class="cms-field cms-field--wide">
-      <label for="field-${name}_file">${showUrl ? 'O subir un archivo' : `Subir ${label.toLowerCase()}`}</label>
+      <label for="field-${name}_file">${url ? `Cambiar ${label.toLowerCase()}` : `Subir ${label.toLowerCase()}`}</label>
       <input id="field-${name}_file" name="${name}_file" type="file" accept="image/jpeg,image/png,image/webp,image/avif" aria-describedby="hint-${name}_file">
-      <span class="cms-field-hint" id="hint-${name}_file">JPG, PNG, WebP o AVIF; hasta 5 MB. El archivo seleccionado reemplaza la URL al guardar.</span>
-      <img class="cms-image-preview" data-preview-for="${name}" src="${escapeHTML(url || '')}" alt="Vista previa de ${escapeHTML(label.toLowerCase())}" ${url ? '' : 'hidden'}>
+      <span class="cms-field-hint" id="hint-${name}_file">JPG, PNG, WebP o AVIF; hasta 5 MB. La imagen seleccionada reemplaza la actual al guardar.</span>
+      <div class="cms-image-preview-frame${url ? ' image-is-loading' : ''}" data-preview-frame="${name}" ${url ? '' : 'hidden'}>
+        <img class="cms-image-preview" data-preview-for="${name}" ${url ? `src="${escapeHTML(displayImageURL(url, 720))}"` : ''} alt="Vista previa de ${escapeHTML(label.toLowerCase())}" ${url ? '' : 'hidden'}>
+      </div>
     </div>
   </div>`;
 }
@@ -329,7 +325,7 @@ function artistForm(profile = {}) {
       ${textareaField('summary', 'Resumen', profile.summary, { wide: true, rows: 3, hint: 'Texto breve que presenta al artista en la página.' })}
       ${textareaField('quote', 'Cita', profile.quote, { wide: true, rows: 3, hint: 'Una frase que se mostrará destacada junto al perfil.' })}
       ${inputField('quote_attribution', 'Atribución de la cita', profile.quote_attribution, { wide: true })}
-      ${imageFields('portrait_url', 'Retrato', profile.portrait_url, { showUrl: false })}
+      ${imageFields('portrait_url', 'Retrato', profile.portrait_url)}
       <h3 class="cms-form-section">Biografía y visión artística</h3>
       ${textareaField('biography', 'Inicios y formación', profile.biography, { wide: true })}
       ${textareaField('artistic_vision', 'Visión personal', profile.artistic_vision, { wide: true })}
@@ -365,24 +361,25 @@ function contactForm(profile = {}) {
 }
 
 function bindImagePreview(name) {
-  const urlInput = $(`#field-${name}`, recordForm);
   const fileInput = $(`#field-${name}_file`, recordForm);
   const preview = $(`.cms-image-preview[data-preview-for="${name}"]`, recordForm);
+  const previewFrame = $(`.cms-image-preview-frame[data-preview-frame="${name}"]`, recordForm);
   const update = (src) => {
-    preview.src = src;
+    previewFrame.hidden = !src;
     preview.hidden = !src;
+    previewFrame.classList.toggle('image-is-loading', Boolean(src));
+    previewFrame.classList.remove('image-has-error');
+    preview.removeAttribute('data-image-state-bound');
+    if(src) preview.src = src.startsWith('blob:') ? src : displayImageURL(src, 720);
+    else preview.removeAttribute('src');
+    if(src) bindCmsImageLoading(preview);
   };
   const releaseObjectUrl = () => {
     const objectUrl = previewObjectUrls.get(name);
     if(objectUrl) URL.revokeObjectURL(objectUrl);
     previewObjectUrls.delete(name);
   };
-  if (urlInput) {
-    urlInput.addEventListener('input', () => {
-      releaseObjectUrl();
-      update(urlInput.value.trim());
-    });
-  }
+  if(!preview.hidden) bindCmsImageLoading(preview);
   fileInput.addEventListener('change', () => {
     const [file] = fileInput.files;
     if(file){
@@ -391,6 +388,23 @@ function bindImagePreview(name) {
       previewObjectUrls.set(name, objectUrl);
       update(objectUrl);
     }
+  });
+}
+
+function bindCmsImageLoading(root = recordList) {
+  const images = root instanceof HTMLImageElement ? [root] : root.querySelectorAll('img');
+  images.forEach((image) => {
+    const frame = image.closest('.cms-image-preview-frame, .cms-record-thumb');
+    if(!frame || image.dataset.imageStateBound) return;
+    image.dataset.imageStateBound = 'true';
+    frame.classList.add('image-is-loading');
+    const finish = (hasError = false) => {
+      frame.classList.remove('image-is-loading');
+      frame.classList.toggle('image-has-error', hasError);
+    };
+    image.addEventListener('load', () => finish(), { once: true });
+    image.addEventListener('error', () => finish(true), { once: true });
+    if(image.complete) finish(image.naturalWidth === 0);
   });
 }
 
@@ -415,8 +429,8 @@ function renderRecords(records) {
       }
     }
     return `<article class="cms-record-row${isArtwork ? ' has-image' : ''}">
-      ${isArtwork ? `<div class="cms-record-thumb">${imageURL
-        ? `<img src="${escapeHTML(imageURL)}" alt="" loading="lazy">`
+      ${isArtwork ? `<div class="cms-record-thumb${imageURL ? ' image-is-loading' : ''}">${imageURL
+        ? `<img src="${escapeHTML(displayImageURL(imageURL, 160))}" alt="" loading="lazy" decoding="async">`
         : '<span>Sin imagen</span>'}</div>` : ''}
       <div>
         <span class="cms-record-title">${escapeHTML(record.title)}</span>
@@ -428,6 +442,7 @@ function renderRecords(records) {
       </div>
     </article>`;
   }).join('');
+  bindCmsImageLoading(recordList);
 }
 
 async function fetchRecords(section) {

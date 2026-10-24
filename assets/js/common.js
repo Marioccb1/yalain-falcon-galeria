@@ -1,4 +1,5 @@
 import { supabase } from '../../utils/supabase.js';
+import { displayImageURL, safeImageURL } from '../../utils/images.js';
 import salaSceneUrl from '../img/sala.webp';
 import cuartoSceneUrl from '../img/cuarto.webp';
 import comedorSceneUrl from '../img/comedor.webp';
@@ -13,19 +14,28 @@ function escapeHTML(value = ''){
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
   })[character]);
 }
-function safeImageURL(value){
-  if(!String(value || '').trim()) return '';
-  try{
-    const url = new URL(String(value || ''), window.location.href);
-    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
-  }catch{
-    return '';
-  }
+function bindImageLoading(root = document){
+  const images = root instanceof HTMLImageElement ? [root] : root.querySelectorAll('img');
+  images.forEach((image) => {
+    const frame = image.closest('.artwork-img, .artist-portrait');
+    if(!frame || image.dataset.imageStateBound) return;
+    image.dataset.imageStateBound = 'true';
+    frame.classList.add('image-is-loading');
+    const finish = (hasError = false) => {
+      frame.classList.remove('image-is-loading');
+      frame.classList.toggle('image-has-error', hasError);
+    };
+    image.addEventListener('load', () => finish(), { once: true });
+    image.addEventListener('error', () => finish(true), { once: true });
+    if(image.complete) finish(image.naturalWidth === 0);
+  });
 }
 
-function artworkImgHTML(w){
+bindImageLoading();
+
+function artworkImgHTML(w, width = 1200){
   return `<div class="artwork-img">
-    <img src="${escapeHTML(safeImageURL(w.img))}" alt="${escapeHTML(`${w.titulo} — ${w.tecnica}, ${w.anio}`)}" loading="lazy">
+    <img src="${escapeHTML(displayImageURL(w.img, width))}" alt="${escapeHTML(`${w.titulo} — ${w.tecnica}, ${w.anio}`)}" loading="lazy" decoding="async">
   </div>`;
 }
 
@@ -33,7 +43,7 @@ function cardHTML(w){
   const encodedId = encodeURIComponent(w.id);
   return `<article class="card">
     <div class="card-canvas" data-light="${escapeHTML(w.id)}" role="button" tabindex="0" aria-label="Ampliar ${escapeHTML(w.titulo)}">
-      ${artworkImgHTML(w)}
+      ${artworkImgHTML(w, 600)}
     </div>
     <h3 class="card-title">${escapeHTML(w.titulo)}</h3>
     <p class="card-meta">${escapeHTML(w.anio)} · ${escapeHTML(w.medidas)}</p>
@@ -48,6 +58,7 @@ function renderGrid(selector, list){
   const el = $(selector);
   if(el){
     el.innerHTML = list.map(cardHTML).join('');
+    bindImageLoading(el);
     el.classList.remove('is-loading');
     el.setAttribute('aria-busy','false');
   }
@@ -101,6 +112,7 @@ function openLightbox(id){
   const w = works.find(x => x.id === id);
   if(!w) return;
   $('#lightboxBody').innerHTML = artworkImgHTML(w);
+  bindImageLoading($('#lightboxBody'));
   openModal(modalLight);
 }
 
@@ -129,6 +141,7 @@ function openWall(id){
       <span>${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</span>
     </div>
   `;
+  bindImageLoading($('#wallBody'));
   openModal(modalWall);
 }
 
@@ -275,7 +288,7 @@ function renderBrand(profile) {
     if(showLogo){
       const logo = document.createElement('img');
       logo.className = 'brand-logo';
-      logo.src = logoUrl;
+      logo.src = displayImageURL(logoUrl, 240);
       logo.alt = '';
       logo.loading = 'eager';
       logo.addEventListener('error', () => {
@@ -287,6 +300,7 @@ function renderBrand(profile) {
     }
     if(showText) contents.push(createCopy());
     brand.replaceChildren(...contents);
+    bindImageLoading(brand);
     brand.setAttribute('aria-label','Yalain Falcón Yanes');
   });
 }
@@ -490,4 +504,4 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
 $('#year').textContent = new Date().getFullYear();
 
-export { $, $$, artworkImgHTML, cardHTML, escapeHTML, pageBase, renderGrid };
+export { $, $$, artworkImgHTML, bindImageLoading, cardHTML, escapeHTML, pageBase, renderGrid };

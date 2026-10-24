@@ -46,7 +46,7 @@
     <!-- RETRATO DEL ARTISTA -->
     <div class="section" style="padding-top:0; border-top:0;">
       <div class="two-col">
-        <div class="artist-portrait artist-portrait--wide" id="artistPortraitMain"></div>
+        <div class="artist-portrait artist-portrait--wide image-is-loading" id="artistPortraitMain"></div>
         <div class="prose" style="align-self:center;">
           <p class="eyebrow eyebrow--accent">En el taller</p>
           <p id="artistQuote" style="font-family:'Bodoni Moda',serif; font-size:clamp(20px,2.2vw,28px); font-style:italic; color:var(--ink); line-height:1.45;">
@@ -136,7 +136,14 @@
         <p>«Cada número es parte de un proceso.<br>Cada obra, una reflexión sobre la vida.»</p>
       </div>
 
-      <div class="grid" id="seriesGrid"></div>
+      <div class="grid is-loading" id="seriesGrid" aria-busy="true" aria-label="Obras de la serie">
+        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+      </div>
     </div>
 
     <div class="page-head" style="padding-bottom:96px;">

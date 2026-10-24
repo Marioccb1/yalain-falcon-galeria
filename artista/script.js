@@ -1,4 +1,5 @@
-import { $, renderGrid } from '../assets/js/common.js';
+import { $, bindImageLoading, renderGrid } from '../assets/js/common.js';
+import { displayImageURL } from '../utils/images.js';
 
 const { works, IMG } = window;
 renderGrid('#seriesGrid', works.slice(0, 6));
@@ -28,7 +29,9 @@ renderParagraphs('#artistVisionContent', profile.artistic_vision);
 renderParagraphs('#seriesDescription', profile.series_description);
 
 const artistPortrait = document.createElement('img');
-artistPortrait.src = profile.portrait_url || IMG.artistWide;
+artistPortrait.src = displayImageURL(profile.portrait_url || IMG.artistWide, 1000);
 artistPortrait.alt = 'Yalain Falcón Yanes trabajando en el taller';
 artistPortrait.loading = 'lazy';
-$('#artistPortraitMain').replaceChildren(artistPortrait);
+const artistPortraitFrame = $('#artistPortraitMain');
+artistPortraitFrame.replaceChildren(artistPortrait);
+bindImageLoading(artistPortraitFrame);

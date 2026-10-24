@@ -1,4 +1,5 @@
-import { $, artworkImgHTML, getContactHref, renderGrid } from './assets/js/common.js';
+import { $, artworkImgHTML, bindImageLoading, getContactHref, renderGrid } from './assets/js/common.js';
+import { displayImageURL } from './utils/images.js';
 
 const { works, IMG } = window;
 renderGrid('#homeGrid', works.slice(0, 5));
@@ -25,14 +26,15 @@ titleLines.forEach((line, index) => {
 $('#heroEyebrow').textContent = profile.hero_eyebrow || 'Pintura contemporánea · Cuba';
 $('#heroIntro').textContent = profile.hero_intro || profile.summary;
 const heroImage = document.createElement('img');
-heroImage.src = profile.hero_image_url || heroWork?.img || IMG.inf31;
+heroImage.src = displayImageURL(profile.hero_image_url || heroWork?.img || IMG.inf31, 1000);
 heroImage.alt = profile.hero_image_alt || heroWork?.titulo || 'Obra de la serie Infinito';
 heroImage.fetchPriority = 'high';
 heroImage.decoding = 'async';
 const heroImageFrame = document.createElement('div');
-heroImageFrame.className = 'artwork-img';
+heroImageFrame.className = 'artwork-img image-is-loading';
 heroImageFrame.append(heroImage);
 $('#heroCanvas').replaceChildren(heroImageFrame);
+bindImageLoading(heroImageFrame);
 if (heroWork) {
   $('#heroCaption').textContent = `${heroWork.titulo} · ${heroWork.anio} · ${heroWork.medidas}`;
   $('#wallFeatureButton').dataset.wall = heroWork.id;
@@ -43,10 +45,13 @@ $('#homeBioSummary').textContent = profile.summary;
 $('#homeQuote').textContent = `«${profile.quote}»`;
 
 const artistPreview = document.createElement('img');
-artistPreview.src = profile.portrait_url || IMG.artistPreview;
+artistPreview.src = displayImageURL(profile.portrait_url || IMG.artistPreview, 1000);
 artistPreview.alt = 'Retrato de Yalain Falcón Yanes en su taller';
 artistPreview.loading = 'lazy';
-$('#artistPreview').replaceChildren(artistPreview);
+const artistPreviewFrame = $('#artistPreview');
+artistPreviewFrame.classList.add('image-is-loading');
+artistPreviewFrame.replaceChildren(artistPreview);
+bindImageLoading(artistPreviewFrame);
 
 const contactForm = $('#artistContactForm');
 contactForm?.addEventListener('submit', (event) => {

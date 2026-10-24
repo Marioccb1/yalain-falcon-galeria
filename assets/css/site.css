@@ -549,7 +549,42 @@ footer[id] {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .55s cubic-bezier(.22, .61, .36, 1);
+  transition: opacity .2s ease, transform .55s cubic-bezier(.22, .61, .36, 1);
+}
+
+.artwork-img.image-is-loading::before,
+.artist-portrait.image-is-loading::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, var(--line) 8%, #e7e0d5 18%, var(--line) 33%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.5s linear infinite;
+}
+
+.artwork-img.image-is-loading img,
+.artist-portrait.image-is-loading img {
+  opacity: 0;
+}
+
+.artwork-img.image-has-error img,
+.artist-portrait.image-has-error img {
+  opacity: 0;
+}
+
+.artwork-img.image-has-error::after,
+.artist-portrait.image-has-error::after {
+  content: "Imagen no disponible";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  text-align: center;
 }
 
 /* ============================================================
@@ -617,7 +652,9 @@ footer[id] {
 
   .gallery-skeleton::before,
   .gallery-skeleton span,
-  .gallery-skeleton i {
+  .gallery-skeleton i,
+  .artwork-img.image-is-loading::before,
+  .artist-portrait.image-is-loading::before {
     animation: none;
   }
 }
@@ -789,7 +826,7 @@ footer[id] {
 .artist-portrait {
   position: relative;
   width: min(100%, 500px);
-  aspect-ratio: 5/7;
+  aspect-ratio: 1;
   margin-inline: auto;
   overflow: hidden;
   background: var(--paper);
@@ -1668,8 +1705,8 @@ body[data-page="home"] .footer-link-icon {
   justify-content: center;
   gap: 8px;
   padding: 0 12px;
-  border: 1px solid #147244;
-  background: #18804f;
+  border: 1px solid #a6482a;
+  background: #a6482a;
   color: #fff;
   font-size: 10px;
   font-weight: 600;
@@ -1680,7 +1717,7 @@ body[data-page="home"] .footer-link-icon {
 
 .nav .whatsapp-shortcut {
   color: #fff;
-  border-color: #147244;
+  border-color: #a6482a;
 }
 
 .whatsapp-shortcut[hidden] {
@@ -1688,13 +1725,13 @@ body[data-page="home"] .footer-link-icon {
 }
 
 .whatsapp-shortcut:hover {
-  background: #11683f;
+  background: #a6481f;
   transform: translateY(-1px);
 }
 
 .nav .whatsapp-shortcut:hover {
   color: #fff;
-  border-color: #11683f;
+  border-color: #a6482f;
 }
 
 .whatsapp-shortcut:focus-visible {
@@ -1882,7 +1919,7 @@ body[data-page="home"] .footer-link-icon {
   }
 
   .view-home .home-hero-mat {
-    padding: clamp(24px, 4vw, 64px);
+    padding: clamp(24px, 1vw, 64px);
   }
 
   .view-home #heroCanvas .artwork-img {
