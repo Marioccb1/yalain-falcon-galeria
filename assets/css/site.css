@@ -423,7 +423,7 @@ button {
   align-items: center;
   padding: 40px var(--page-pad) 64px;
   overflow: clip;
-  background: url("../images/hero/lienzo_hero.png") no-repeat center center / cover;
+  background: url("../images/hero/lienzo_hero.webp") no-repeat center center / cover;
 }
 
 .hero-decor {
