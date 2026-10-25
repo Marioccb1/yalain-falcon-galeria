@@ -902,6 +902,61 @@ body[data-page="artist"] .site-header {
   }
 }
 
+@media (max-width: 1099px) {
+  .artist-featured__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .artist-featured__col,
+  .artist-featured__col--stack {
+    display: contents;
+  }
+
+  .artist-featured__col[hidden] {
+    display: none;
+  }
+
+  .artist-featured .artist-piece {
+    padding: 12px;
+    border-bottom: 1px solid #c4b49a;
+  }
+
+  .artist-featured .artist-piece figure {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 72px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .artist-page .artist-featured .artwork-img.artist-piece__media {
+    grid-column: 2;
+    grid-row: 1;
+    width: 72px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .artist-featured .artist-piece figcaption {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .artist-featured .artist-piece__title {
+    margin-top: 0;
+    font-size: clamp(20px, 3vw, 24px);
+  }
+
+  .artist-featured .artist-piece__meta {
+    font-size: 12px;
+  }
+
+  .artist-featured .artwork-price--piece {
+    font-size: clamp(20px, 2.5vw, 24px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
 
   .artist-piece__title,

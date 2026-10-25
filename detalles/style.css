@@ -1,8 +1,24 @@
 @import url("../assets/css/site.css");
 
 #view-artwork > .section {
+  width: 100%;
   padding-top: 24px;
+  padding-inline: 0;
   max-width: none;
+}
+
+#view-artwork .details-stage {
+  width: 100%;
+}
+
+#view-artwork .details-stage > * {
+  min-width: 0;
+}
+
+@media (max-width: 1023px) {
+  #view-artwork .details-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 #view-artwork .artwork-img {
@@ -14,4 +30,32 @@
   width: 100%;
   height: 100%;
   object-fit: fill;
+}
+
+#view-artwork .pager {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#view-artwork .pager-thumb {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  #view-artwork .pager {
+    gap: 8px;
+  }
+
+  #view-artwork .pager-thumb {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+  }
+
+  #view-artwork .pager-thumb .artwork-img {
+    width: 56px;
+  }
+
+  #view-artwork .pager-thumb.is-next {
+    grid-template-columns: minmax(0, 1fr) 56px;
+  }
 }
