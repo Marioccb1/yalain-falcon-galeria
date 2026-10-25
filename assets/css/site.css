@@ -2757,6 +2757,15 @@ button {
   }
 }
 
+@media (max-width: 840px) {
+  .artwork-stage__plaque {
+    background: antiquewhite;
+    padding: 66px;
+    opacity: .9;
+  }
+}
+
+
 /* ============================================================
    MOTION — entradas orgánicas
    ============================================================ */
