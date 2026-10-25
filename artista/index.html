@@ -1,207 +1,423 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>El artista — Yalain Falcón Yanes</title>
-  <meta name="description" content="Información y trayectoria del artista cubano Yalain Falcón Yanes.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body data-base="../" data-page="artist">
-<a class="skip-link" href="#mainContent">Saltar al contenido</a>
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
-    <nav class="nav" id="mainNav">
-      <a href="../index.html">Inicio</a>
-      <a href="../artista/index.html">Artista</a>
-      <a href="../galeria/index.html">Galería</a>
-      <a href="../index.html#exposiciones">Exposiciones</a>
-      <a href="../index.html#contacto">Contacto</a>
-    </nav>
-    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Abrir menú de navegación">Menú</button>
-  </div>
-</header>
-<main id="mainContent">
-<section class="view is-active" id="view-artist">
-    <div class="page-head">
-      <a class="back" href="../index.html">← Volver al inicio</a>
-    </div>
 
-    <div class="artist-hero">
-      <h1>Yalain<br>Falcón Yanes</h1>
-      <div>
-        <p class="eyebrow" id="artistOrigin">La Habana, Cuba · 1972</p>
-        <p class="section-sub" id="artistSummary">
-          Diseñador industrial de formación, pintor por necesidad de expresión.
-          Su obra se construye por capas: una superficie que habla de proceso,
-          cambio y permanencia.
-        </p>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>El artista — Yalain Falcón Yanes</title>
+    <meta name="description"
+          content="Información y trayectoria del artista cubano Yalain Falcón Yanes.">
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="style.css">
+  </head>
+
+  <body data-base="../"
+        data-page="artist">
+    <a class="skip-link"
+       href="#mainContent">Saltar al contenido</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand"
+           href="../index.html">Yalain Falcón <span>—</span> Yanes</a>
+        <nav class="nav"
+             id="mainNav">
+          <a href="../index.html">Inicio</a>
+          <a href="../artista/index.html">Artista</a>
+          <a href="../galeria/index.html">Galería</a>
+          <a href="../index.html#exposiciones">Exposiciones</a>
+          <a href="../index.html#contacto">Contacto</a>
+        </nav>
+        <button class="menu-toggle"
+                id="menuToggle"
+                aria-expanded="false"
+                aria-controls="mainNav"
+                aria-label="Abrir menú de navegación">Menú</button>
       </div>
-    </div>
+    </header>
+    <main id="mainContent">
+      <div class="view is-active artist-page"
+           id="view-artist">
 
-    <!-- RETRATO DEL ARTISTA -->
-    <div class="section" style="padding-top:0; border-top:0;">
-      <div class="two-col">
-        <div class="artist-portrait artist-portrait--wide image-is-loading" id="artistPortraitMain"></div>
-        <div class="prose" style="align-self:center;">
-          <p class="eyebrow eyebrow--accent">En el taller</p>
-          <p id="artistQuote" style="font-family:'Bodoni Moda',serif; font-size:clamp(20px,2.2vw,28px); font-style:italic; color:var(--ink); line-height:1.45;">
-            «Trabajo por capas. Dejo que la pintura decida cuándo está terminada:
-            a veces tarda meses, a veces años.»
-          </p>
-          <p id="artistQuoteAttribution" style="margin-top:24px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);">
-            Yalain Falcón Yanes · La Habana
-          </p>
-        </div>
+        <section class="artist-hero"
+                 aria-label="Presentación de Yalain Falcón Yanes">
+          <div class="artist-hero__textures"
+               aria-hidden="true">
+            <img class="artist-hero__ground"
+                 src="../assets/images/hero/bg.jpg"
+                 alt=""
+                 width="1600"
+                 height="1000"
+                 decoding="async">
+            <img class="artist-hero__wash"
+                 src="../assets/images/hero/olive-paint-wash.svg"
+                 alt=""
+                 width="600"
+                 height="800"
+                 decoding="async">
+            <img class="artist-hero__gold"
+                 src="../assets/images/hero/brush-strokes.svg"
+                 alt=""
+                 width="720"
+                 height="420"
+                 decoding="async">
+            <img class="artist-hero__lines"
+                 src="../assets/images/hero/gestural-lines.svg"
+                 alt=""
+                 width="420"
+                 height="260"
+                 decoding="async">
+          </div>
+          <div class="artist-hero__layout">
+            <div class="artist-hero__intro">
+              <p class="artist-hero__origin"
+                 id="artistOrigin">La Habana, Cuba · 1972</p>
+              <h1 id="artistName"><span>Yalain</span><span>Falcón</span><span>Yanes</span></h1>
+              <span class="artist-hero__rule"
+                    aria-hidden="true"></span>
+              <p class="artist-hero__summary"
+                 id="artistSummary">Diseñador industrial de formación, pintor por necesidad de expresión. Su obra se
+                construye por capas: una superficie que habla de proceso, cambio y permanencia.</p>
+            </div>
+            <div class="artist-hero__portrait">
+            </div>
+          </div>
+        </section>
+
+        <section class="artist-biography"
+                 aria-labelledby="biographyTitle">
+          <figure class="artist-biography__artwork"
+                  id="biographyArtwork">
+            <a class="artist-piece artist-piece--plain"
+               id="biographyLink"
+               href="../detalles/index.html?id=inf-24"
+               aria-label="Abrir ficha de Infinito XXIV">
+              <div class="artwork-img artist-piece__media">
+                <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=800&amp;q=80"
+                     alt="Infinito XXIV — Técnica mixta sobre lienzo, 2021"
+                     width="800"
+                     height="800"
+                     decoding="async">
+              </div>
+            </a>
+          </figure>
+          <div class="artist-biography__content">
+            <p class="artist-kicker"><span>Biografía</span><span class="artist-kicker__rule"
+                    aria-hidden="true"></span></p>
+            <h2 id="biographyTitle">Inicios y formación</h2>
+            <div class="prose"
+                 id="artistBiographyContent">
+              <p class="is-lead">Nacido en La Habana, Cuba, en 1972, Yalain Falcón Yanes se formó como diseñador
+                industrial en el Instituto Superior Politécnico de Diseño Industrial (1995). Su formación técnica marcó
+                una base estructural que más adelante evolucionó hacia la pintura, donde encontró un medio más directo
+                de expresión y comunicación.</p>
+              <p>La práctica artística de Yalain se basa en la experimentación por capas. Utiliza diversos materiales y
+                técnicas, permitiendo que cada pieza evolucione con el tiempo. El resultado es una superficie que habla
+                de proceso, cambio y permanencia.</p>
+            </div>
+            <div class="artist-biography__vision"
+                 id="artistVision">
+              <h3>Visión personal</h3>
+              <div class="prose"
+                   id="artistVisionContent">
+                <p>En la década de los noventa, el arte abstracto cubano vivió una revitalización significativa. Nuevas
+                  generaciones retomaron esta tradición aportando perspectivas contemporáneas.</p>
+                <p>La obra de Yalain se inserta en ese diálogo: respeta la raíz abstracta, pero la adapta a una mirada
+                  actual, donde el mensaje y la experiencia emocional del espectador son fundamentales.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="artist-quotation"
+                 id="artistQuotation"
+                 aria-label="Cita del artista">
+          <div class="artist-quotation__brushes"
+               aria-hidden="true">
+            <img class="artist-quotation__brush artist-quotation__brush--olive"
+                 src="../assets/images/hero/olive-paint-wash.svg"
+                 alt=""
+                 width="600"
+                 height="800"
+                 decoding="async">
+            <img class="artist-quotation__brush artist-quotation__brush--gold"
+                 src="../assets/images/hero/brush-strokes.svg"
+                 alt=""
+                 width="720"
+                 height="420"
+                 decoding="async">
+          </div>
+          <div class="artist-quotation__content">
+            <blockquote class="artist-quotation__text"
+                        id="artistQuote">Trabajo por capas. Dejo que la pintura decida cuándo está terminada: a veces
+              tarda meses, a veces años.</blockquote>
+            <p class="artist-quotation__sign"
+               id="artistQuoteAttribution">Yalain Falcón Yanes · La Habana</p>
+          </div>
+        </section>
+
+        <section class="artist-series"
+                 aria-labelledby="seriesTitle">
+          <div class="artist-series__gestures"
+               aria-hidden="true">
+            <img src="../assets/images/hero/gestural-lines.svg"
+                 alt=""
+                 width="420"
+                 height="260"
+                 decoding="async">
+          </div>
+          <div class="artist-series__intro">
+            <p class="artist-kicker artist-kicker--short"><span>Serie</span><span class="artist-kicker__rule"
+                    aria-hidden="true"></span></p>
+            <h2 class="artist-series__title"
+                id="seriesTitle"><em>Infinito</em></h2>
+            <p class="artist-series__years">2016 – presente</p>
+            <div class="prose"
+                 id="seriesDescription">
+              <p>«Infinito» nace como resultado de una investigación sobre las actitudes y las relaciones humanas. En
+                esta serie, el artista pinta números consecutivos sobre fondos de color —y ocasionalmente blancos—
+                acompañados de frases motivacionales.</p>
+              <p>Cada obra representa un momento del proceso personal del artista, convirtiéndose en un testimonio
+                visual de crecimiento y transformación.</p>
+            </div>
+          </div>
+          <figure class="artist-series__artwork"
+                  id="seriesArtwork">
+            <a class="artist-piece artist-piece--plain"
+               id="seriesLink"
+               href="../detalles/index.html?id=inf-03"
+               aria-label="Abrir ficha de Infinito III">
+              <div class="artwork-img artist-piece__media">
+                <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=800&amp;q=80"
+                     alt="Infinito III — Óleo sobre lienzo, 2017"
+                     width="800"
+                     height="800"
+                     decoding="async">
+              </div>
+              <figcaption>
+                <p class="artist-piece__title">Infinito III</p>
+                <p class="artist-piece__meta">2017 · 90 × 70 cm</p>
+              </figcaption>
+            </a>
+          </figure>
+          <a class="btn artist-series__cta"
+             href="../galeria/index.html">
+            Explorar galería completa
+            <svg viewBox="0 0 24 24"
+                 width="16"
+                 height="16"
+                 aria-hidden="true"
+                 focusable="false">
+              <path d="M4 12h14M13 6l6 6-6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+          </a>
+          <ul class="artist-series__keywords"
+              aria-hidden="true">
+            <li>Números</li>
+            <li>Capas</li>
+            <li>Experiencia</li>
+            <li>Transformación</li>
+          </ul>
+        </section>
+
+        <section class="artist-featured"
+                 aria-labelledby="featuredTitle">
+          <header class="artist-featured__header">
+            <h2 id="featuredTitle">Obras destacadas</h2>
+            <span class="artist-featured__rule"
+                  aria-hidden="true"></span>
+            <a class="artist-featured__all"
+               href="../galeria/index.html">
+              Ver todas las obras
+              <svg viewBox="0 0 24 24"
+                   width="15"
+                   height="15"
+                   aria-hidden="true"
+                   focusable="false">
+                <path d="M4 12h14M13 6l6 6-6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+              </svg>
+            </a>
+          </header>
+          <div class="artist-featured__grid"
+               id="featuredGrid">
+            <div class="artist-featured__col"
+                 id="featuredPrimary">
+              <a class="artist-piece"
+                 href="../detalles/index.html?id=inf-01">
+                <figure>
+                  <div class="artwork-img artist-piece__media">
+                    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&amp;q=80"
+                         alt="Infinito I — Óleo sobre lienzo, 2016"
+                         width="800"
+                         height="800"
+                         loading="lazy"
+                         decoding="async">
+                  </div>
+                  <figcaption>
+                    <p class="artist-piece__title">Infinito I</p>
+                    <p class="artist-piece__meta">2016 · 100 × 80 cm</p>
+                  </figcaption>
+                </figure>
+              </a>
+            </div>
+            <div class="artist-featured__col artist-featured__col--stack"
+                 id="featuredStack">
+              <a class="artist-piece"
+                 href="../detalles/index.html?id=inf-07">
+                <figure>
+                  <div class="artwork-img artist-piece__media">
+                    <img src="https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=800&amp;q=80"
+                         alt="Infinito VII — Óleo y acrílico sobre lienzo, 2018"
+                         width="800"
+                         height="800"
+                         loading="lazy"
+                         decoding="async">
+                  </div>
+                  <figcaption>
+                    <p class="artist-piece__title">Infinito VII</p>
+                    <p class="artist-piece__meta">2018 · 120 × 90 cm</p>
+                  </figcaption>
+                </figure>
+              </a>
+              <a class="artist-piece"
+                 href="../detalles/index.html?id=inf-12">
+                <figure>
+                  <div class="artwork-img artist-piece__media">
+                    <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&amp;q=80"
+                         alt="Infinito XII — Óleo sobre lienzo, 2019"
+                         width="800"
+                         height="800"
+                         loading="lazy"
+                         decoding="async">
+                  </div>
+                  <figcaption>
+                    <p class="artist-piece__title">Infinito XII</p>
+                    <p class="artist-piece__meta">2019 · 100 × 100 cm</p>
+                  </figcaption>
+                </figure>
+              </a>
+            </div>
+            <div class="artist-featured__col"
+                 id="featuredClosing">
+              <a class="artist-piece"
+                 href="../detalles/index.html?id=inf-18">
+                <figure>
+                  <div class="artwork-img artist-piece__media">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&amp;q=80"
+                         alt="Infinito XVIII — Óleo sobre lienzo, 2020"
+                         width="800"
+                         height="800"
+                         loading="lazy"
+                         decoding="async">
+                  </div>
+                  <figcaption>
+                    <p class="artist-piece__title">Infinito XVIII</p>
+                    <p class="artist-piece__meta">2020 · 130 × 97 cm</p>
+                  </figcaption>
+                </figure>
+              </a>
+            </div>
+          </div>
+        </section>
+
       </div>
-    </div>
-
-    <!-- INICIOS Y FORMACIÓN -->
-    <div class="section">
-      <div class="two-col">
+    </main>
+    <footer class="site-footer"
+            id="contacto">
+      <div class="footer-inner">
         <div>
-          <p class="eyebrow">01</p>
-          <h2>Inicios y formación</h2>
+          <p class="footer-brand">Yalain Falcón Yanes</p>
+          <p class="footer-note">Pintura contemporánea · Serie Infinito. La Habana, Cuba. Obra disponible y encargos
+            personalizados.</p>
         </div>
-        <div class="prose" id="artistBiographyContent">
-          <p>
-            Nacido en La Habana, Cuba, en 1972, Yalain Falcón Yanes se formó como
-            diseñador industrial en el Instituto Superior Politécnico de Diseño
-            Industrial (1995). Su formación técnica marcó una base estructural que
-            más adelante evolucionó hacia la pintura, donde encontró un medio más
-            directo de expresión y comunicación.
-          </p>
-          <p>
-            La práctica artística de Yalain se basa en la experimentación por capas.
-            Utiliza diversos materiales y técnicas, permitiendo que cada pieza
-            evolucione con el tiempo. El resultado es una superficie que habla de
-            proceso, cambio y permanencia.
-          </p>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <a href="tel:+5352932396">+53 52932396</a>
+          <a href="mailto:yalainfalcon@gmail.com">yalainfalcon@gmail.com</a>
+          <a href="https://wa.me/5352932396"
+             target="_blank"
+             rel="noopener">WhatsApp directo</a>
         </div>
-      </div>
-    </div>
-
-    <!-- VISIÓN PERSONAL -->
-    <div class="section">
-      <div class="two-col">
-        <div>
-          <p class="eyebrow">02</p>
-          <h2>Visión personal</h2>
-        </div>
-        <div class="prose" id="artistVisionContent">
-          <p>
-            En la década de los noventa, el arte abstracto cubano vivió una
-            revitalización significativa. Nuevas generaciones retomaron esta
-            tradición aportando perspectivas contemporáneas.
-          </p>
-          <p>
-            La obra de Yalain se inserta en ese diálogo: respeta la raíz abstracta,
-            pero la adapta a una mirada actual, donde el mensaje y la experiencia
-            emocional del espectador son fundamentales.
-          </p>
+        <div class="footer-col">
+          <h4>Redes</h4>
+          <a href="https://instagram.com/infinitecubanartist"
+             target="_blank"
+             rel="noopener">Instagram</a>
+          <a href="https://www.facebook.com/search/top?q=Yalain%20Falc%C3%B3n"
+             target="_blank"
+             rel="noopener">Facebook</a>
+          <a href="https://www.threads.com/@infinitecubanartist"
+             target="_blank"
+             rel="noopener"
+             data-social-icon="threads">Threads</a>
         </div>
       </div>
-    </div>
+      <div class="footer-bottom">© <span id="year"></span> Yalain Falcón Yanes · Todos los derechos reservados</div>
+    </footer>
 
-    <!-- SERIE INFINITO -->
-    <div class="section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">03</p>
-          <h2 class="section-title">Serie <em>Infinito</em><br>2016 – presente</h2>
-        </div>
-        <p class="section-sub">
-          Una investigación sobre las actitudes y las relaciones humanas.
-        </p>
-      </div>
-
-      <div class="prose" id="seriesDescription" style="max-width:78ch; margin-bottom:56px;">
-        <p>
-          «Infinito» nace como resultado de una investigación sobre las actitudes y
-          las relaciones humanas. En esta serie, el artista pinta números
-          consecutivos sobre fondos de color —y ocasionalmente blancos— acompañados
-          de frases motivacionales.
-        </p>
-        <p>
-          Cada obra representa un momento del proceso personal del artista,
-          convirtiéndose en un testimonio visual de crecimiento y transformación.
-        </p>
-      </div>
-
-      <div class="quote-block">
-        <p>«Cada número es parte de un proceso.<br>Cada obra, una reflexión sobre la vida.»</p>
-      </div>
-
-      <div class="grid is-loading" id="seriesGrid" aria-busy="true" aria-label="Obras de la serie">
-        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
-        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
-        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
-        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
-        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
-        <div class="gallery-skeleton" aria-hidden="true"><span></span><span></span><i></i></div>
+    <div class="modal"
+         id="modalDesc"
+         role="dialog"
+         aria-modal="true"
+         aria-hidden="true">
+      <div class="modal-backdrop modal-backdrop--dark"
+           data-close></div>
+      <div class="modal-panel">
+        <button class="modal-close"
+                data-close
+                aria-label="Cerrar">× Cerrar</button>
+        <div id="modalDescBody"></div>
       </div>
     </div>
 
-    <div class="page-head" style="padding-bottom:96px;">
-      <a class="btn btn--ghost" href="../galeria/index.html">Explorar la galería completa</a>
+    <div class="modal"
+         id="modalLight"
+         role="dialog"
+         aria-modal="true"
+         aria-hidden="true">
+      <div class="modal-backdrop modal-backdrop--light"
+           data-close></div>
+      <div class="lightbox-stage">
+        <button class="modal-close"
+                data-close
+                aria-label="Cerrar">× Cerrar</button>
+        <div id="lightboxBody"></div>
+      </div>
     </div>
-  </section>
-</main>
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer" id="contacto">
-  <div class="footer-inner">
-    <div>
-      <p class="footer-brand">Yalain Falcón Yanes</p>
-      <p class="footer-note">
-        Pintura contemporánea · Serie «Infinito». La Habana, Cuba.
-        Obra disponible y encargos personalizados.
-      </p>
-    </div>
-    <div class="footer-col">
-      <h4>Contacto</h4>
-      <a href="tel:+5352932396">+53 52932396</a>
-      <a href="mailto:yalainfalcon@gmail.com">yalainfalcon@gmail.com</a>
-      <a href="https://wa.me/5352932396" target="_blank" rel="noopener">WhatsApp directo</a>
-    </div>
-    <div class="footer-col">
-      <h4>Redes</h4>
-      <a href="https://instagram.com/infinitecubanartist" target="_blank" rel="noopener">Instagram · @infinitecubanartist</a>
-      <a href="https://www.facebook.com/search/top?q=Yalain%20Falc%C3%B3n" target="_blank" rel="noopener">Facebook · Yalain Falcón</a>
-    </div>
-  </div>
-  <div class="footer-bottom">© <span id="year"></span> Yalain Falcón Yanes · Todos los derechos reservados</div>
-</footer>
 
-<!-- ================= MODAL: DESCRIPCIÓN ================= -->
-<div class="modal" id="modalDesc" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
-  <div class="modal-panel">
-    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
-    <div id="modalDescBody"></div>
-  </div>
-</div>
+    <div class="modal"
+         id="modalWall"
+         role="dialog"
+         aria-modal="true"
+         aria-hidden="true">
+      <div class="modal-backdrop modal-backdrop--dark"
+           data-close></div>
+      <div class="wall-stage">
+        <button class="modal-close"
+                data-close
+                aria-label="Cerrar">× Cerrar</button>
+        <div id="wallBody"></div>
+      </div>
+    </div>
+    <script type="module"
+            src="../assets/js/public-bootstrap.js"></script>
+  </body>
 
-<!-- ================= MODAL: LIGHTBOX ================= -->
-<div class="modal" id="modalLight" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal-backdrop modal-backdrop--light" data-close></div>
-  <div class="lightbox-stage">
-    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
-    <div id="lightboxBody"></div>
-  </div>
-</div>
-
-<!-- ================= MODAL: VER EN PARED ================= -->
-<div class="modal" id="modalWall" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal-backdrop modal-backdrop--dark" data-close></div>
-  <div class="wall-stage">
-    <button class="modal-close" data-close aria-label="Cerrar">✕ Cerrar</button>
-    <div id="wallBody"></div>
-  </div>
-</div>
-<script type="module" src="../assets/js/public-bootstrap.js"></script>
-</body>
 </html>

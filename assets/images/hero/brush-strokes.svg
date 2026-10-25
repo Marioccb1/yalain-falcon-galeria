@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" fill="none" aria-hidden="true">
+  <defs>
+    <filter id="brushSoft" x="-15%" y="-40%" width="130%" height="180%">
+      <feGaussianBlur stdDeviation="4.5"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <g filter="url(#brushSoft)" fill="#E6D5B8" fill-opacity="0.55">
+    <path d="M40 120c88-36 176-28 268-8 72 16 148 18 220-6 28-10 54 8 42 34-28 58-112 72-188 78-96 8-198-4-278-42-28-14-36-40-64-56z"/>
+    <path d="M90 210c96-18 188 12 278 8 70-4 140-22 198 4 24 10 22 36-4 44-78 24-168 18-250 6-86-12-170-8-222-36-18-10-14-22 0-26z" fill-opacity="0.4"/>
+    <path d="M160 280c70-22 150-10 220 6 58 14 118 8 168-12 20-8 36 10 18 26-52 46-136 52-210 42-78-10-152-8-196-34-16-10-12-22 0-28z" fill-opacity="0.32"/>
+  </g>
+  <g fill="#F1EAE0" fill-opacity="0.45">
+    <path d="M120 150c60-14 130-8 190 4 48 10 96 4 138-12" stroke="#E6D5B8" stroke-width="18" stroke-linecap="round" stroke-opacity="0.35" fill="none"/>
+    <path d="M70 240c80-8 160 16 240 10" stroke="#E6D5B8" stroke-width="14" stroke-linecap="round" stroke-opacity="0.28" fill="none"/>
+  </g>
+</svg>

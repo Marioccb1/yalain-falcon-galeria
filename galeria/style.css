@@ -1,46 +1,90 @@
 @import url("../assets/css/site.css");
 
-#view-gallery .artist-hero {
-  max-width: none;
-  padding-inline: max(32px, calc((100vw - 1336px) / 2));
-  background: var(--paper);
+/* Página Galería — exposición editorial contenida */
+#view-gallery {
+  overflow-x: clip;
 }
 
-#view-gallery .gallery-works {
-  border-top: 0;
+#view-gallery .gallery-open {
+  isolation: isolate;
 }
 
-#view-gallery .gallery-skeleton::before {
-  aspect-ratio: 1;
+#view-gallery .gallery-open::before {
+  content: "";
+  position: absolute;
+  left: max(-2%, calc(var(--page-pad) * -0.4));
+  top: 8%;
+  width: min(42%, 320px);
+  height: min(70%, 260px);
+  background-image: url("../assets/images/hero/olive-paint-wash.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: .55;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(-3deg);
 }
 
-#view-gallery .artwork-img {
-  aspect-ratio: 1;
-  background: transparent;
-  border: 0;
+#view-gallery .gallery-open::after {
+  content: "";
+  position: absolute;
+  right: 4%;
+  top: 12%;
+  width: min(34%, 280px);
+  height: min(55%, 220px);
+  background-image: url("../assets/images/hero/paper-panel.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: .45;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(2deg);
 }
 
-#view-gallery .artwork-img img {
-  object-fit: fill;
+#view-gallery .gallery-open > * {
+  position: relative;
+  z-index: 1;
 }
 
-#view-gallery .card-canvas:focus-visible {
-  outline: 2px solid var(--accent);
+#view-gallery .gallery-open .eyebrow {
+  color: var(--color-primary);
+}
+
+#view-gallery .hang--masonry {
+  gap: clamp(20px, 2.8vw, 36px) clamp(18px, 2.5vw, 32px);
+}
+
+@media (min-width: 1024px) {
+  #view-gallery .hang--masonry {
+    gap: 32px 40px;
+    grid-auto-rows: minmax(128px, 13.5vh);
+  }
+}
+
+#view-gallery .card-exhibit-media {
+  background: var(--color-surface-alt);
+}
+
+#view-gallery .card-exhibit-link:focus-visible {
+  outline: 2px solid var(--color-primary);
   outline-offset: 4px;
 }
 
-#view-gallery .gallery-inquiry {
-  padding: 32px 36px;
-  border: 0;
-  background: var(--paper);
+#view-gallery .gallery-inquiry-actions .btn {
+  min-height: 48px;
 }
 
-@media (max-width: 639px) {
-  #view-gallery .artist-hero {
-    padding-inline: 20px;
+@media (max-width: 767px) {
+  #view-gallery .hang--masonry {
+    grid-auto-rows: auto;
   }
 
-  #view-gallery .gallery-inquiry {
-    padding: 24px 20px;
+  #view-gallery .hang--masonry .card-exhibit-media {
+    aspect-ratio: 4 / 5;
+    height: auto;
+  }
+
+  #view-gallery .hang--masonry .card-exhibit-link {
+    height: auto;
   }
 }

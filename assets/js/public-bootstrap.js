@@ -38,6 +38,8 @@ try {
     anio: artwork.year,
     medidas: artwork.dimensions,
     tecnica: artwork.technique,
+    precio: artwork.price == null || artwork.price === '' ? null : Number(artwork.price),
+    precioMoneda: artwork.price_currency || 'USD',
     color: artwork.color,
     color2: artwork.color2,
     fg: artwork.foreground_color,

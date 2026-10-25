@@ -1,9 +1,15 @@
-import { $, artworkImgHTML, bindImageLoading, getContactHref, renderGrid } from './assets/js/common.js';
+import { $, artworkImgHTML, artworkPriceHTML, bindImageLoading, escapeHTML, getContactHref, renderHang } from './assets/js/common.js';
 import { displayImageURL } from './utils/images.js';
 
 const { works, IMG } = window;
-renderGrid('#homeGrid', works.slice(0, 5));
+const featuredWorks = works.slice(0, 5);
+renderHang('#homeGrid', featuredWorks, { mode: 'salon' });
 $('#homeWorkCount').textContent = works.length;
+const salaDecorFragment = $('#salaDecorFragment');
+const decorWork = featuredWorks[2] || featuredWorks[0];
+if (salaDecorFragment && decorWork?.img) {
+  salaDecorFragment.src = displayImageURL(decorWork.img, 900);
+}
 const profile = window.artistProfile;
 const heroWork = works[6] || works[0];
 const heroTitle = $('#heroTitle');
@@ -23,7 +29,10 @@ titleLines.forEach((line, index) => {
     heroTitle.append(document.createTextNode(line));
   }
 });
-$('#heroEyebrow').textContent = profile.hero_eyebrow || 'Pintura contemporánea · Cuba';
+const heroEyebrow = $('#heroEyebrow');
+if (heroEyebrow) {
+  heroEyebrow.textContent = profile.hero_eyebrow || 'Pintura contemporánea · Cuba';
+}
 $('#heroIntro').textContent = profile.hero_intro || profile.summary;
 const heroImage = document.createElement('img');
 heroImage.src = displayImageURL(profile.hero_image_url || heroWork?.img || IMG.inf31, 1000);
@@ -33,25 +42,44 @@ heroImage.decoding = 'async';
 const heroImageFrame = document.createElement('div');
 heroImageFrame.className = 'artwork-img image-is-loading';
 heroImageFrame.append(heroImage);
-$('#heroCanvas').replaceChildren(heroImageFrame);
+$('#heroCanvas')?.replaceChildren(heroImageFrame);
 bindImageLoading(heroImageFrame);
 if (heroWork) {
-  $('#heroCaption').textContent = `${heroWork.titulo} · ${heroWork.anio} · ${heroWork.medidas}`;
-  $('#wallFeatureButton').dataset.wall = heroWork.id;
-  $('#wallFeatureArtwork').innerHTML = artworkImgHTML(heroWork);
+  const heroCaption = $('#heroCaption');
+  if (heroCaption) {
+    const price = artworkPriceHTML(heroWork, { tag: 'span', className: 'artwork-price artwork-price--inline' });
+    heroCaption.innerHTML = `${escapeHTML(heroWork.titulo)} · ${escapeHTML(heroWork.anio)} · ${escapeHTML(heroWork.medidas)}${price ? ` · ${price}` : ''}`;
+  }
+  const wallFeatureButton = $('#wallFeatureButton');
+  if (wallFeatureButton) wallFeatureButton.dataset.wall = heroWork.id;
+  const wallFeatureArtwork = $('#wallFeatureArtwork');
+  if (wallFeatureArtwork) {
+    wallFeatureArtwork.innerHTML = artworkImgHTML(heroWork, 800);
+    const wallImg = wallFeatureArtwork.querySelector('img');
+    if (wallImg) {
+      wallImg.loading = 'eager';
+      wallImg.decoding = 'async';
+    }
+    bindImageLoading(wallFeatureArtwork);
+  }
 }
 
-$('#homeBioSummary').textContent = profile.summary;
-$('#homeQuote').textContent = `«${profile.quote}»`;
+const homeBioSummary = $('#homeBioSummary');
+if (homeBioSummary) homeBioSummary.textContent = profile.summary;
+const homeQuote = $('#homeQuote');
+if (homeQuote) homeQuote.textContent = `«${profile.quote}»`;
 
-const artistPreview = document.createElement('img');
-artistPreview.src = displayImageURL(profile.portrait_url || IMG.artistPreview, 1000);
-artistPreview.alt = 'Retrato de Yalain Falcón Yanes en su taller';
-artistPreview.loading = 'lazy';
 const artistPreviewFrame = $('#artistPreview');
-artistPreviewFrame.classList.add('image-is-loading');
-artistPreviewFrame.replaceChildren(artistPreview);
-bindImageLoading(artistPreviewFrame);
+if (artistPreviewFrame) {
+  const artistPreview = document.createElement('img');
+  artistPreview.src = displayImageURL(profile.portrait_url || IMG.artistPreview, 1000);
+  artistPreview.alt = 'Retrato de Yalain Falcón Yanes en su taller';
+  artistPreview.loading = 'lazy';
+  artistPreview.decoding = 'async';
+  artistPreviewFrame.classList.add('image-is-loading');
+  artistPreviewFrame.replaceChildren(artistPreview);
+  bindImageLoading(artistPreviewFrame);
+}
 
 const contactForm = $('#artistContactForm');
 contactForm?.addEventListener('submit', (event) => {

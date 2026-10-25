@@ -219,6 +219,17 @@ function artworkForm(artwork = {}) {
       ${inputField('year', 'Año', artwork.year, { type: 'number', min: 1000, max: 9999, required: true })}
       ${inputField('dimensions', 'Medidas', artwork.dimensions, { placeholder: '100 × 80 cm' })}
       ${inputField('technique', 'Técnica o materiales', artwork.technique)}
+      ${inputField('price', 'Precio', artwork.price ?? '', {
+        type: 'number',
+        min: 0,
+        step: '0.01',
+        placeholder: '1800',
+        hint: 'Opcional. Déjalo vacío si no quieres mostrar el precio en el sitio.',
+      })}
+      ${inputField('price_currency', 'Moneda', artwork.price_currency || 'USD', {
+        placeholder: 'USD',
+        hint: 'Código ISO de 3 letras: USD, EUR, CUP…',
+      })}
       ${inputField('id', 'Identificador del enlace', artwork.id || `obra-${crypto.randomUUID()}`, {
         required: true,
         placeholder: 'inf-41',
@@ -416,8 +427,11 @@ function renderRecords(records) {
 
   const isArtwork = activeSection === 'artworks';
   recordList.innerHTML = records.map((record) => {
+    const priceLabel = isArtwork && record.price != null && record.price !== ''
+      ? ` · ${Number(record.price).toLocaleString('es', { maximumFractionDigits: 2 })} ${record.price_currency || 'USD'}`
+      : '';
     const detail = isArtwork
-      ? `${record.year} · ${record.dimensions || 'Sin medidas'}`
+      ? `${record.year} · ${record.dimensions || 'Sin medidas'}${priceLabel}`
       : `${record.year} · ${record.place || 'Sin lugar'}`;
     let imageURL = '';
     if(isArtwork && record.image_url){
@@ -542,6 +556,24 @@ function formFile(formData, name) {
   return file instanceof File && file.size > 0 ? file : null;
 }
 
+function parseArtworkPrice(formData) {
+  const raw = formValue(formData, 'price');
+  if (!raw) return null;
+  const amount = Number(raw);
+  if (!Number.isFinite(amount) || amount < 0) {
+    throw new Error('El precio debe ser un número mayor o igual a cero.');
+  }
+  return amount;
+}
+
+function parseArtworkCurrency(formData) {
+  const currency = formValue(formData, 'price_currency').toUpperCase() || 'USD';
+  if (!/^[A-Z]{3}$/.test(currency)) {
+    throw new Error('La moneda debe ser un código de 3 letras (USD, EUR, CUP…).');
+  }
+  return currency;
+}
+
 async function submitArtwork(formData) {
   const currentId = formData.get('original_id');
   const record = {
@@ -551,6 +583,8 @@ async function submitArtwork(formData) {
     year: Number(formData.get('year')),
     dimensions: formValue(formData, 'dimensions'),
     technique: formValue(formData, 'technique'),
+    price: parseArtworkPrice(formData),
+    price_currency: parseArtworkCurrency(formData),
     color: formValue(formData, 'color'),
     color2: formValue(formData, 'color2'),
     foreground_color: formValue(formData, 'foreground_color'),

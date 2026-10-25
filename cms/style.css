@@ -35,20 +35,20 @@
 
 .cms-brand {
   display: inline-block;
-  font-family: 'Bodoni Moda', serif;
+  font-family: var(--font-heading);
   font-size: 16px;
   letter-spacing: .16em;
   text-transform: uppercase;
 }
 
 .cms-brand span {
-  color: var(--accent);
+  color: var(--color-text-muted);
 }
 
 .cms-kicker,
 .cms-nav-label {
   margin: 48px 0 14px;
-  color: var(--accent);
+  color: var(--color-text-muted);
   font-size: 11px;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -56,7 +56,7 @@
 
 .cms-login h1 {
   margin: 0;
-  font-family: 'Bodoni Moda', serif;
+  font-family: var(--font-heading);
   font-size: clamp(44px, 8vw, 72px);
   font-weight: 400;
   line-height: .98;
@@ -86,7 +86,7 @@
 }
 
 .cms-required {
-  color: var(--accent);
+  color: var(--color-primary);
 }
 
 .cms-login-form input,
@@ -178,7 +178,7 @@
 }
 
 .cms-primary {
-  border-color: var(--accent);
+  border-color: var(--color-text-muted);
   background: var(--accent);
   color: #fff;
 }
@@ -214,7 +214,7 @@
 }
 
 .cms-row-button:hover {
-  border-color: var(--accent);
+  border-color: var(--color-text-muted);
   background: var(--accent);
   color: #fff;
 }
@@ -237,7 +237,7 @@
 .cms-status {
   min-height: 1.5em;
   margin: 8px 0 0;
-  color: var(--accent);
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 
@@ -257,7 +257,7 @@
 }
 
 .cms-back:hover {
-  color: var(--accent);
+  color: var(--color-text-muted);
 }
 
 .cms-app {
@@ -306,7 +306,7 @@
 }
 
 .cms-navigation a[aria-current="page"] {
-  box-shadow: inset 2px 0 var(--accent);
+  box-shadow: inset 2px 0 var(--color-primary);
 }
 
 .cms-sidebar .cms-back {
@@ -350,7 +350,7 @@
 
 .cms-heading h1 {
   margin: 0;
-  font-family: 'Bodoni Moda', serif;
+  font-family: var(--font-heading);
   font-size: clamp(36px, 5vw, 56px);
   font-weight: 400;
   line-height: 1.05;
@@ -459,7 +459,7 @@
   margin: 18px 0 0;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--line);
-  color: var(--accent);
+  color: var(--color-text-muted);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .15em;
@@ -473,13 +473,13 @@
 }
 
 .cms-record-title {
-  font-family: 'Bodoni Moda', serif;
+  font-family: var(--font-heading);
   font-size: 20px;
 }
 
 .cms-record-state {
   margin-left: 8px;
-  color: var(--accent);
+  color: var(--color-text-muted);
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: .1em;
@@ -503,7 +503,7 @@
 
 .cms-editor h2 {
   margin: 0 0 16px;
-  font-family: 'Bodoni Moda', serif;
+  font-family: var(--font-heading);
   font-weight: 400;
   font-size: 28px;
 }
@@ -535,7 +535,7 @@
 .cms-field input[type="checkbox"] {
   width: 20px;
   min-height: 20px;
-  accent-color: var(--accent);
+  accent-color: var(--color-primary);
 }
 
 .cms-field--check {
@@ -620,7 +620,7 @@
 
 .cms-form-message {
   min-height: 1.5em;
-  color: var(--accent);
+  color: var(--color-text-muted);
 }
 
 .cms-form-message.is-error {
@@ -646,7 +646,7 @@
 
 .cms-dialog-kicker {
   margin: 0 0 8px;
-  color: var(--accent);
+  color: var(--color-text-muted);
   font-size: 10px;
   letter-spacing: .16em;
   text-transform: uppercase;
@@ -654,7 +654,7 @@
 
 .cms-dialog h2 {
   margin: 0;
-  font-family: 'Bodoni Moda', serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   font-weight: 400;
 }

@@ -1,4 +1,4 @@
-import { renderGrid } from '../assets/js/common.js';
+import { renderHang } from '../assets/js/common.js';
 
 const { works } = window;
-renderGrid('#fullGrid', works);
+renderHang('#fullGrid', works, { mode: 'masonry' });

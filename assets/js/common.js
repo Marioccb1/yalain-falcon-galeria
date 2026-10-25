@@ -33,35 +33,242 @@ function bindImageLoading(root = document){
 
 bindImageLoading();
 
+function artworkRatio(){
+  return '1 / 1';
+}
+
 function artworkImgHTML(w, width = 1200){
   return `<div class="artwork-img">
     <img src="${escapeHTML(displayImageURL(w.img, width))}" alt="${escapeHTML(`${w.titulo} — ${w.tecnica}, ${w.anio}`)}" loading="lazy" decoding="async">
   </div>`;
 }
 
-function cardHTML(w){
+function formatArtworkPrice(work){
+  const amount = Number(work?.precio);
+  if(!Number.isFinite(amount)) return '';
+  const currency = String(work?.precioMoneda || 'USD').toUpperCase() || 'USD';
+  const fractionDigits = Number.isInteger(amount) ? 0 : 2;
+  const number = amount.toLocaleString('es-ES', {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  });
+  return `${number} ${currency}`;
+}
+
+function artworkPriceHTML(work, { tag = 'p', className = 'artwork-price' } = {}){
+  const label = formatArtworkPrice(work);
+  if(!label) return '';
+  return `<${tag} class="${escapeHTML(className)}">${escapeHTML(label)}</${tag}>`;
+}
+
+function cardHTML(w, options = {}){
   const encodedId = encodeURIComponent(w.id);
-  return `<article class="card">
+  const index = Number.isFinite(options.index) ? options.index : 0;
+  const meta = [w.anio, w.medidas].filter(Boolean).map(escapeHTML).join(' · ');
+  const price = artworkPriceHTML(w);
+  const detailHref = `${pageBase}detalles/index.html?id=${encodedId}`;
+
+  if (options.variant === 'hang') {
+    const num = String(index + 1).padStart(2, '0');
+    const imageWidth = index === 0 || index === 3 ? 1200 : 900;
+    const hoverMeta = [w.tecnica, w.anio].filter(Boolean).map(escapeHTML).join(' · ');
+    return `<article class="card card--exhibit" style="--hang-i: ${index}">
+      <a class="card-exhibit-link" href="${detailHref}" aria-label="Abrir ficha de ${escapeHTML(w.titulo)}">
+        <div class="card-exhibit-media">
+          ${artworkImgHTML(w, imageWidth)}
+          <div class="card-exhibit-panel">
+            <div class="card-exhibit-panel__text">
+              <span class="card-index" aria-hidden="true">${num}</span>
+              <h3 class="card-title">${escapeHTML(w.titulo)}</h3>
+              ${hoverMeta ? `<p class="card-meta">${hoverMeta}</p>` : ''}
+              ${artworkPriceHTML(w, { className: 'artwork-price artwork-price--on-dark' })}
+            </div>
+            <span class="card-exhibit-panel__cta" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+    </article>`;
+  }
+
+  if (options.variant === 'filmstrip') {
+    const num = String(index + 1).padStart(2, '0');
+    return `<article class="card card--exhibit" style="--hang-i: ${index}">
+      <a class="card-exhibit-link" href="${detailHref}">
+        <span class="card-index" aria-hidden="true">${num}</span>
+        ${artworkImgHTML(w, 800)}
+        <div class="wall-label">
+          <h3 class="card-title">${escapeHTML(w.titulo)}</h3>
+          ${meta ? `<p class="card-meta">${meta}</p>` : ''}
+          ${price}
+        </div>
+      </a>
+    </article>`;
+  }
+
+  return `<article class="card" style="--hang-i: ${index}">
     <div class="card-canvas" data-light="${escapeHTML(w.id)}" role="button" tabindex="0" aria-label="Ampliar ${escapeHTML(w.titulo)}">
       ${artworkImgHTML(w, 600)}
     </div>
-    <h3 class="card-title">${escapeHTML(w.titulo)}</h3>
-    <p class="card-meta">${escapeHTML(w.anio)} · ${escapeHTML(w.medidas)}</p>
-    <div class="card-actions">
-      <button class="mini" data-desc="${escapeHTML(w.id)}">Descripción</button>
-      <a class="mini" href="${pageBase}detalles/index.html?id=${encodedId}">Ver ficha</a>
+    <div class="wall-label">
+      <h3 class="card-title">${escapeHTML(w.titulo)}</h3>
+      ${meta ? `<p class="card-meta">${meta}</p>` : ''}
+      ${price}
+      <div class="card-actions">
+        <button class="mini" data-desc="${escapeHTML(w.id)}">Descripción</button>
+        <a class="mini" href="${detailHref}">Ver ficha</a>
+      </div>
     </div>
   </article>`;
+}
+
+function revealElements(root = document){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scope = root instanceof Element ? root : document;
+  const localCards = $$('.card', scope);
+  const pageBlocks = scope === document ? $$([
+    '.artwork-stage',
+    '.ledger',
+    '.sala',
+    '.wall-feature',
+    '.artist-preview',
+    '.artist-biography',
+    '.artist-quotation',
+    '.artist-series',
+    '.artist-featured',
+    '.exp-spine',
+    '.exp-row',
+    '.contact-section',
+    '.gallery-open',
+    '.gallery-inquiry',
+    '.details-stage > *',
+    '.section-title',
+  ].join(',')) : [];
+  const targets = [...new Set([...localCards, ...pageBlocks])];
+  targets.forEach((el, index) => {
+    el.classList.add('reveal');
+    if(el.matches('.card, .exp-row')) el.classList.add('reveal--soft');
+    el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+  });
+  if(reduce){
+    targets.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+  if(!revealElements.observer){
+    revealElements.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if(!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealElements.observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: .12 });
+  }
+  targets.forEach((el) => {
+    if(!el.classList.contains('is-visible')) revealElements.observer.observe(el);
+  });
 }
 
 function renderGrid(selector, list){
   const el = $(selector);
   if(el){
-    el.innerHTML = list.map(cardHTML).join('');
+    el.innerHTML = list.map((work, index) => cardHTML(work, { index })).join('');
     bindImageLoading(el);
     el.classList.remove('is-loading');
     el.setAttribute('aria-busy','false');
+    revealElements(el);
   }
+}
+
+function placeExhibitCell(el, column, rowStart, rowSpan, colSpan = 1){
+  el.style.gridColumn = colSpan > 1 ? `${column} / span ${colSpan}` : String(column);
+  el.style.gridRow = `${rowStart} / ${rowStart + rowSpan}`;
+}
+
+function clearExhibitPlacement(cards){
+  cards.forEach((card) => {
+    card.style.gridColumn = '';
+    card.style.gridRow = '';
+  });
+}
+
+/** Mosaico 2 columnas sin huecos, adaptable a N obras (bloques de 5 + resto). */
+function layoutExhibitMasonry(container){
+  if(!container) return;
+  const cards = $$('.card--exhibit', container);
+  if(!cards.length) return;
+
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  if(isMobile){
+    clearExhibitPlacement(cards);
+    return;
+  }
+
+  let row = 1;
+  let i = 0;
+  while(i < cards.length){
+    const left = cards.length - i;
+    if(left >= 5){
+      placeExhibitCell(cards[i], 1, row, 4);
+      placeExhibitCell(cards[i + 1], 2, row, 2);
+      placeExhibitCell(cards[i + 2], 2, row + 2, 2);
+      placeExhibitCell(cards[i + 3], 1, row + 4, 2);
+      placeExhibitCell(cards[i + 4], 2, row + 4, 2);
+      row += 6;
+      i += 5;
+    } else if(left === 4){
+      placeExhibitCell(cards[i], 1, row, 2);
+      placeExhibitCell(cards[i + 1], 2, row, 2);
+      placeExhibitCell(cards[i + 2], 1, row + 2, 2);
+      placeExhibitCell(cards[i + 3], 2, row + 2, 2);
+      row += 4;
+      i += 4;
+    } else if(left === 3){
+      placeExhibitCell(cards[i], 1, row, 4);
+      placeExhibitCell(cards[i + 1], 2, row, 2);
+      placeExhibitCell(cards[i + 2], 2, row + 2, 2);
+      row += 4;
+      i += 3;
+    } else if(left === 2){
+      placeExhibitCell(cards[i], 1, row, 3);
+      placeExhibitCell(cards[i + 1], 2, row, 3);
+      row += 3;
+      i += 2;
+    } else {
+      placeExhibitCell(cards[i], 1, row, 3, 2);
+      row += 3;
+      i += 1;
+    }
+  }
+}
+
+function bindMasonryLayout(container){
+  if(!container || container.dataset.masonryBound === '1') return;
+  container.dataset.masonryBound = '1';
+  let frame = 0;
+  const sync = () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => layoutExhibitMasonry(container));
+  };
+  sync();
+  window.addEventListener('resize', sync, { passive: true });
+}
+
+function renderHang(selector, list, options = {}){
+  const el = $(selector);
+  if(!el) return;
+  const mode = options.mode || 'salon';
+  el.classList.add('hang', `hang--${mode}`);
+  if(mode === 'filmstrip') el.classList.add('filmstrip');
+  el.innerHTML = list.map((work, index) => cardHTML(work, {
+    variant: mode === 'filmstrip' ? 'filmstrip' : 'hang',
+    index,
+  })).join('');
+  bindImageLoading(el);
+  el.classList.remove('is-loading');
+  el.setAttribute('aria-busy','false');
+  if(mode === 'masonry') bindMasonryLayout(el);
+  revealElements(el);
 }
 
 const wallScenes = [
@@ -78,8 +285,18 @@ const modalLight = $('#modalLight');
 const modalWall  = $('#modalWall');
 let lastModalTrigger = null;
 
+function setModalOrigin(modal, trigger){
+  if(!(trigger instanceof Element) || !(modal instanceof Element)) return;
+  const rect = trigger.getBoundingClientRect();
+  const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+  const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+  modal.style.setProperty('--modal-origin-x', `${Math.min(92, Math.max(8, x))}%`);
+  modal.style.setProperty('--modal-origin-y', `${Math.min(92, Math.max(8, y))}%`);
+}
+
 function openModal(m){
   lastModalTrigger = document.activeElement;
+  setModalOrigin(m, lastModalTrigger);
   m.classList.add('is-open');
   m.setAttribute('aria-hidden','false');
   document.body.style.overflow = 'hidden';
@@ -102,6 +319,7 @@ function openDescription(id){
   $('#modalDescBody').innerHTML = `
     <h3>${escapeHTML(w.titulo)}</h3>
     <p class="modal-meta">${escapeHTML(w.anio)} · ${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</p>
+    ${artworkPriceHTML(w, { className: 'artwork-price artwork-price--modal' })}
     <p>${escapeHTML(w.desc)}</p>
     <a class="btn" href="${pageBase}detalles/index.html?id=${encodedId}" data-close>Ver ficha completa</a>
   `;
@@ -139,6 +357,7 @@ function openWall(id){
       <span>${escapeHTML(w.titulo)} · ${escapeHTML(w.anio)}</span>
       <span data-wall-scene-announcement aria-live="polite">Vista seleccionada: ${wallScenes[0].label}</span>
       <span>${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</span>
+      ${artworkPriceHTML(w, { tag: 'span', className: 'artwork-price artwork-price--inline' })}
     </div>
   `;
   bindImageLoading($('#wallBody'));
@@ -504,4 +723,24 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
 $('#year').textContent = new Date().getFullYear();
 
-export { $, $$, artworkImgHTML, bindImageLoading, cardHTML, escapeHTML, pageBase, renderGrid };
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', () => revealElements(), { once: true });
+} else {
+  revealElements();
+}
+
+export {
+  $,
+  $$,
+  artworkImgHTML,
+  artworkPriceHTML,
+  artworkRatio,
+  bindImageLoading,
+  cardHTML,
+  escapeHTML,
+  formatArtworkPrice,
+  layoutExhibitMasonry,
+  pageBase,
+  renderGrid,
+  renderHang,
+};

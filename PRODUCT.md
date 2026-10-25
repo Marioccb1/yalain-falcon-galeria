@@ -49,6 +49,107 @@ managed content.
 - Preserve the existing Spanish-language portfolio content, contact links,
   artwork identity, and shared visual system unless the owner changes them.
 
+## Identidad visual del producto
+
+### Sistema de diseño
+
+El producto utiliza la identidad visual **Earthy Luxe Gallery**.
+
+Es una experiencia de galería de arte contemporáneo minimalista, editorial y
+de autor, pensada para enfatizar las pinturas y la identidad artística de
+Yalain Falcón Yanes.
+
+El diseño visual debe sentirse:
+- Sofisticado.
+- Artístico.
+- Cálido.
+- Atemporal.
+- Premium.
+- Calmado y equilibrado.
+
+La interfaz debe recordar una exposición de arte contemporáneo, no un escaparate
+de comercio electrónico convencional.
+
+### Sistema de color
+
+La paleta visual oficial consiste en:
+
+- Espresso Brown: `#3B2F2F`
+- Sage Green: `#A3B18A`
+- Beige: `#E6D5B8`
+- Warm Ivory: `#F8F3E9`
+- Pure White: `#FFFFFF`
+
+El sitio usa predominantemente superficies neutras, Espresso Brown para
+tipografía y controles principales, y Sage Green para acentos visuales
+contenidos.
+
+### Tipografía
+
+- Títulos editoriales: Cormorant Garamond.
+- Tipografía de interfaz y cuerpo: DM Sans.
+- Deben proporcionarse tipografías de respaldo locales adecuadas.
+
+La tipografía debe establecer una jerarquía clara y priorizar la legibilidad.
+
+### Presentación de las obras
+
+La presentación de las pinturas es la máxima prioridad visual.
+
+- Conservar la composición y las proporciones originales de cada pintura.
+- Usar imágenes de obras a gran tamaño.
+- Evitar decoración excesiva alrededor de las obras.
+- Preferir fondos neutros y espacio en blanco generoso.
+- Mantener los metadatos claros pero secundarios respecto a la imagen.
+- No crear detalles de obra ni afirmaciones comerciales ausentes de los datos.
+
+### Experiencia por página
+
+**Inicio:** Una introducción editorial curada al artista y a obras seleccionadas.
+
+**Galería:** Un catálogo limpio y adaptable que enfatiza la imagen de las
+pinturas y su descubrimiento.
+
+**Detalles de obra:** Una presentación contemplativa centrada en la imagen, con
+la información disponible, acciones de contacto y la función existente
+«Ver en pared».
+
+**Artista:** Una presentación editorial de la biografía, la identidad artística,
+la serie Infinito y el contenido expositivo disponible.
+
+**CMS:** Una interfaz administrativa funcional con el mismo lenguaje visual,
+priorizando usabilidad sobre ornamento.
+
+### Principios de interacción
+
+- Usar transiciones sutiles y animación con propósito.
+- Mantener una respuesta interactiva clara.
+- Evitar movimiento visualmente agresivo.
+- Respetar las preferencias de reducción de movimiento.
+- Garantizar acceso por teclado y diseños responsive.
+- Mantener contraste de texto accesible y estados de foco visibles.
+
+### Compromisos técnicos de diseño
+
+- Los tokens de diseño compartidos pertenecen a `assets/css/site.css`.
+- Los estilos específicos de cada página permanecen en su hoja de estilos.
+- Los componentes compartidos deben permanecer visualmente consistentes.
+- El rediseño debe preservar la arquitectura estática multipágina.
+- La integración existente con Supabase, el CMS, el enrutado, los
+  identificadores de obras y el contacto deben seguir funcionando.
+- El contenido publicado administrado desde el CMS sigue siendo la fuente de
+  verdad.
+- Los cambios de diseño no deben introducir datos inventados de obras,
+  biografía, exposiciones, precios o disponibilidad.
+
+### Objetivo de diseño del producto
+
+Crear un portafolio de arte de autor distintivo que genere reconocimiento,
+presente las pinturas con dignidad, comunique autenticidad artística y anime a
+explorar la colección y contactar al artista.
+
+La experiencia visual debe sostener la obra, no competir con ella.
+
 ## Evidence on Hand
 
 - Public site pages: `index.html`, `artista/index.html`, `galeria/index.html`,

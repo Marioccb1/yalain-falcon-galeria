@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 640" fill="none" aria-hidden="true">
+  <defs>
+    <filter id="paperGrain" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="3" seed="11" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.9  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.18 0" result="g"/>
+      <feBlend in="SourceGraphic" in2="g" mode="multiply"/>
+    </filter>
+    <linearGradient id="paperTone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8F3E9"/>
+      <stop offset="55%" stop-color="#E6D5B8"/>
+      <stop offset="100%" stop-color="#F1EAE0"/>
+    </linearGradient>
+  </defs>
+  <path filter="url(#paperGrain)" fill="url(#paperTone)" fill-opacity="0.92" d="M48 36c18-8 46-14 78-10 92 10 188 4 268 22 28 6 52 24 58 50 10 48 18 112 8 176-8 52-4 108 10 158 8 28-6 54-30 66-54 26-128 38-198 34-72-4-148-18-196-48-22-14-34-40-30-66 12-72 8-148-4-220-6-36 4-68 36-162z"/>
+  <path fill="#DED8CF" fill-opacity="0.35" d="M72 70c120-8 240 6 330 28 8 42 16 96 6 150-10 58-2 120 8 176-70 22-156 34-236 28-70-6-138-24-168-48 8-78 4-162-8-236 8-36 28-78 68-98z"/>
+</svg>
