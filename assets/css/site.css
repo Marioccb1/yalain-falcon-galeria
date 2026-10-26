@@ -1142,6 +1142,19 @@ button {
 /* ============================================================
    PARED / RETRATO
    ============================================================ */
+
+#contact_bg_decor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: url("../images/contact_bg.webp") no-repeat right center / cover;
+  opacity: .42;
+  background-color: transparent;
+  mix-blend-mode: multiply;
+}
+
 .wall-feature {
   padding: var(--space-room) var(--page-pad);
   background: var(--color-surface-alt);
@@ -1288,10 +1301,10 @@ button {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-color: #97cc95;
+  background-color: #f8e4a2;
   width: 100%;
   height: 100%;
-  opacity: .1;
+  opacity: .2;
   mix-blend-mode: multiply;
 }
 
@@ -1754,13 +1767,18 @@ button {
    ============================================================ */
 .contact-section,
 .close-dark {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: var(--space-room) var(--page-pad);
-  background: var(--color-surface-alt);
+  background-color: var(--color-surface-alt);
   color: var(--color-text);
   border-top: 1px solid var(--color-border);
 }
 
 .contact-layout {
+  position: relative;
+  z-index: 1;
   max-width: var(--container-max);
   margin: 0 auto;
   display: grid;
@@ -1803,16 +1821,17 @@ button {
 }
 
 .contact-form-wrap {
-  background: transparent;
+  background: #9e948466;
   border: 0;
   border-top: 1px solid var(--color-border);
-  padding: 8px 0 0;
+  padding: 16px;
+  backdrop-filter: blur(5px);
 }
 
 .contact-form-intro,
 .contact-form-help,
 .contact-form-status {
-  color: var(--color-text-muted);
+  color: var(--color-text);
   font-size: 14px;
 }
 
@@ -1836,7 +1855,7 @@ button {
   font-size: 12px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--color-text);
 }
 
 .contact-field input,
@@ -2602,6 +2621,39 @@ button {
   }
 }
 
+@media (max-width: 1023px) {
+
+  /* En columna: el arte pasa a franja visible arriba; el form ya no lo tapa */
+  .contact-section {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0;
+    padding-bottom: clamp(40px, 8vw, 72px);
+  }
+
+  #contact_bg_decor {
+    position: relative;
+    inset: auto;
+    flex: 0 0 auto;
+    align-self: stretch;
+    width: auto;
+    margin-inline: calc(var(--page-pad) * -1);
+    height: clamp(176px, 48vw, 280px);
+    opacity: 1;
+    mix-blend-mode: normal;
+    background-position: 88% 78%;
+    background-size: cover;
+  }
+
+  .contact-layout {
+    padding-top: clamp(28px, 5vw, 40px);
+  }
+
+  .contact-form-wrap {
+    background: color-mix(in srgb, var(--color-surface-alt) 72%, transparent);
+  }
+}
+
 @media (max-width: 767px) {
   .contact-form-fields {
     grid-template-columns: 1fr;
@@ -2609,6 +2661,11 @@ button {
 
   .contact-field--wide {
     grid-column: auto;
+  }
+
+  #contact_bg_decor {
+    height: clamp(168px, 52vw, 240px);
+    background-position: 92% 82%;
   }
 
   .nav .whatsapp-shortcut {
