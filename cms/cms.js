@@ -108,6 +108,7 @@ function showLogin(message = '') {
   adminView.hidden = true;
   loginForm.reset();
   finishAuthLoading();
+  syncPublicSiteLinks();
   setLoginMessage(message, Boolean(message));
 }
 
@@ -132,6 +133,7 @@ async function enterAdmin(user) {
   loginView.hidden = true;
   adminView.hidden = false;
   finishAuthLoading();
+  syncPublicSiteLinks();
   $('#signedInEmail').textContent = user.email || '';
   await loadSection(activeSection);
 }
@@ -810,6 +812,30 @@ recordForm.addEventListener('click', async (event) => {
   }
 });
 
+function normalizeCmsPath(pathname) {
+  return String(pathname || '')
+    .replace(/\/index\.html$/i, '')
+    .replace(/\/+$/, '') || '/';
+}
+
+function publicSiteHref() {
+  const path = window.location.pathname;
+  const cmsIndex = path.indexOf('/cms');
+  if (cmsIndex === -1) return '../index.html';
+  const after = path
+    .slice(cmsIndex + 4)
+    .replace(/\/index\.html$/i, '');
+  const depth = after.split('/').filter(Boolean).length;
+  return `${'../'.repeat(depth + 1)}index.html`;
+}
+
+function syncPublicSiteLinks() {
+  const href = publicSiteHref();
+  document.querySelectorAll('a.cms-back, a.cms-brand').forEach((link) => {
+    link.setAttribute('href', href);
+  });
+}
+
 $('.cms-navigation').addEventListener('click', (event) => {
   const link = event.target.closest('a[data-section]');
   if (!link || event.defaultPrevented || event.button !== 0
@@ -819,9 +845,17 @@ $('.cms-navigation').addEventListener('click', (event) => {
   if (!validSections.includes(section)) return;
   const destination = new URL(link.href, window.location.href);
   if (destination.origin !== window.location.origin) return;
+
+  // Portada / Artista / Contacto son HTML distintos: navegación real.
+  // Si solo hacemos pushState, los href relativos (Ver sitio público) se resuelven mal.
+  const currentPath = normalizeCmsPath(window.location.pathname);
+  const destinationPath = normalizeCmsPath(destination.pathname);
+  if (destinationPath !== currentPath) return;
+
   event.preventDefault();
   if (section === activeSection) return;
   window.history.pushState({ section }, '', destination);
+  syncPublicSiteLinks();
   loadSection(section, { focusHeading: true });
 });
 

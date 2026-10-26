@@ -184,8 +184,11 @@ button {
 
 .brand-logo {
   display: block;
-  width: 28px;
-  height: auto;
+  height: calc(var(--header-h) - 12px);
+  width: auto;
+  max-width: min(52vw, 168px);
+  object-fit: contain;
+  object-position: left center;
 }
 
 .brand-copy {

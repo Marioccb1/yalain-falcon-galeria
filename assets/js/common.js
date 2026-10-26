@@ -507,7 +507,7 @@ function renderBrand(profile) {
     if(showLogo){
       const logo = document.createElement('img');
       logo.className = 'brand-logo';
-      logo.src = displayImageURL(logoUrl, 240);
+      logo.src = displayImageURL(logoUrl, 640);
       logo.alt = '';
       logo.loading = 'eager';
       logo.addEventListener('error', () => {

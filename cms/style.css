@@ -585,8 +585,8 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: left;
+  object-fit: contain;
+  object-position: center;
 }
 
 .cms-image-preview-frame.image-is-loading img {
