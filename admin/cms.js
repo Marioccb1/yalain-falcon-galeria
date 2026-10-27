@@ -74,9 +74,9 @@ function sectionFromLocation() {
   const pathname = window.location.pathname
     .replace(/\/index\.html$/i, '')
     .replace(/\/+$/, '');
-  if (pathname.endsWith('/cms/portada')) return 'cover';
-  if (pathname.endsWith('/cms/artista')) return 'artist';
-  if (pathname.endsWith('/cms/contacto')) return 'contact';
+  if (pathname.endsWith('/admin/portada') || pathname.endsWith('/cms/portada')) return 'cover';
+  if (pathname.endsWith('/admin/artista') || pathname.endsWith('/cms/artista')) return 'artist';
+  if (pathname.endsWith('/admin/contacto') || pathname.endsWith('/cms/contacto')) return 'contact';
 
   const section = new URLSearchParams(window.location.search).get('section');
   if (section === 'profile') return 'cover';
@@ -207,9 +207,34 @@ function releaseImagePreviews() {
   previewObjectUrls.clear();
 }
 
+function artworkIdFromTitle(title) {
+  const slug = String(title || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  return slug ? `obra-${slug}` : '';
+}
+
+function bindArtworkIdFromTitle(isNew) {
+  const titleInput = $('#field-title', recordForm);
+  const idInput = $('#field-id', recordForm);
+  if (!titleInput || !idInput || !isNew) return;
+  const sync = () => {
+    idInput.value = artworkIdFromTitle(titleInput.value);
+  };
+  titleInput.addEventListener('input', sync);
+  sync();
+}
+
 function artworkForm(artwork = {}) {
   releaseImagePreviews();
   const isNew = !artwork.id;
+  const linkId = isNew ? artworkIdFromTitle(artwork.title) : artwork.id;
   recordForm.innerHTML = `
     <h2>${isNew ? 'Añadir obra' : 'Editar obra'}</h2>
     <p class="cms-form-intro">Los campos con <span class="cms-required" aria-hidden="true">*</span> son obligatorios. La ficha reúne los datos, la imagen y la publicación de la obra.</p>
@@ -232,20 +257,14 @@ function artworkForm(artwork = {}) {
         placeholder: 'USD',
         hint: 'Código ISO de 3 letras: USD, EUR, CUP…',
       })}
-      ${inputField('id', 'Identificador del enlace', artwork.id || `obra-${crypto.randomUUID()}`, {
+      ${inputField('id', 'Identificador del enlace', linkId, {
         required: true,
-        placeholder: 'inf-41',
-        readOnly: !isNew,
-        hint: 'Forma parte del enlace de la ficha. Elige un identificador breve y fácil de reconocer.',
+        readOnly: true,
       })}
       <h3 class="cms-form-section">Imagen y descripción</h3>
       ${imageFields('image_url', 'Imagen', artwork.image_url)}
       ${inputField('phrase', 'Frase de la obra', artwork.phrase, { wide: true })}
       ${textareaField('description', 'Descripción', artwork.description, { wide: true, hint: 'Este texto aparece en la descripción ampliada de la obra.' })}
-      <h3 class="cms-form-section">Colores complementarios</h3>
-      ${inputField('color', 'Color principal', artwork.color || '#A6482A', { type: 'color' })}
-      ${inputField('color2', 'Color secundario', artwork.color2 || '#7C3018', { type: 'color' })}
-      ${inputField('foreground_color', 'Color de texto', artwork.foreground_color || '#F6EFE6', { type: 'color' })}
       <h3 class="cms-form-section">Publicación</h3>
       ${inputField('sort_order', 'Orden en la galería', artwork.sort_order ?? 0, {
         type: 'number',
@@ -263,6 +282,7 @@ function artworkForm(artwork = {}) {
     </div>
     <p class="cms-form-message" role="status" aria-live="polite"></p>`;
   bindImagePreview('image_url');
+  bindArtworkIdFromTitle(isNew);
 }
 
 function exhibitionForm(exhibition = {}) {
@@ -578,18 +598,16 @@ function parseArtworkCurrency(formData) {
 
 async function submitArtwork(formData) {
   const currentId = formData.get('original_id');
+  const title = formValue(formData, 'title');
   const record = {
-    id: currentId || formValue(formData, 'id'),
-    title: formValue(formData, 'title'),
+    id: currentId || artworkIdFromTitle(title),
+    title,
     number: formValue(formData, 'number'),
     year: Number(formData.get('year')),
     dimensions: formValue(formData, 'dimensions'),
     technique: formValue(formData, 'technique'),
     price: parseArtworkPrice(formData),
     price_currency: parseArtworkCurrency(formData),
-    color: formValue(formData, 'color'),
-    color2: formValue(formData, 'color2'),
-    foreground_color: formValue(formData, 'foreground_color'),
     phrase: formValue(formData, 'phrase'),
     image_url: formValue(formData, 'image_url'),
     description: formValue(formData, 'description'),
@@ -597,8 +615,11 @@ async function submitArtwork(formData) {
     sort_order: Number(formData.get('sort_order')) || 0,
     updated_at: new Date().toISOString(),
   };
-  if (!record.id || !record.title || !record.number || !Number.isInteger(record.year)) {
-    throw new Error('Completa el identificador, título, número y año.');
+  if (!record.title || !record.number || !Number.isInteger(record.year)) {
+    throw new Error('Completa el título, número y año.');
+  }
+  if (!record.id) {
+    throw new Error('El título debe incluir letras o números para generar el identificador del enlace.');
   }
   const file = formFile(formData, 'image_url_file');
   if (file) record.image_url = await uploadImage(file);
@@ -703,6 +724,18 @@ async function removeRecord(id) {
   setMainMessage(`${singular} eliminada.`, false);
 }
 
+function loginErrorMessage(error) {
+  const raw = String(error?.message || '').toLowerCase();
+  if (raw.includes('invalid login credentials') || raw.includes('invalid_credentials')) {
+    return 'Correo o contraseña incorrectos. Si no recuerdas la clave, restablécela en Supabase → Authentication → Users.';
+  }
+  if (raw.includes('email not confirmed') || raw.includes('not confirmed')) {
+    return 'El correo aún no está confirmado. En Supabase → Authentication → Users, confirma el usuario o desactiva «Confirm email».';
+  }
+  if (error?.message) return error.message;
+  return 'No se pudo iniciar sesión. Revisa el correo y la contraseña o confirma que el usuario tenga acceso de administrador.';
+}
+
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const button = $('button[type="submit"]', loginForm);
@@ -716,8 +749,8 @@ loginForm.addEventListener('submit', async (event) => {
     });
     if (error) throw error;
     await enterAdmin(data.user);
-  } catch {
-    setLoginMessage('No se pudo iniciar sesión. Revisa el correo y la contraseña o confirma que el usuario tenga acceso de administrador.');
+  } catch (error) {
+    setLoginMessage(loginErrorMessage(error));
   } finally {
     button.disabled = false;
   }
@@ -820,10 +853,12 @@ function normalizeCmsPath(pathname) {
 
 function publicSiteHref() {
   const path = window.location.pathname;
-  const cmsIndex = path.indexOf('/cms');
-  if (cmsIndex === -1) return '../index.html';
+  const markers = ['/admin', '/cms'];
+  const marker = markers.find((prefix) => path.includes(prefix));
+  if (!marker) return '../index.html';
+  const panelIndex = path.indexOf(marker);
   const after = path
-    .slice(cmsIndex + 4)
+    .slice(panelIndex + marker.length)
     .replace(/\/index\.html$/i, '');
   const depth = after.split('/').filter(Boolean).length;
   return `${'../'.repeat(depth + 1)}index.html`;

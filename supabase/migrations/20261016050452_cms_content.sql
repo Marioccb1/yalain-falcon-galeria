@@ -60,18 +60,20 @@ alter table public.cms_artworks enable row level security;
 alter table public.cms_artist_profile enable row level security;
 alter table public.cms_exhibitions enable row level security;
 
-revoke all on table public.cms_admins from anon, authenticated;
-revoke all on table public.cms_artworks from anon, authenticated;
-revoke all on table public.cms_artist_profile from anon, authenticated;
-revoke all on table public.cms_exhibitions from anon, authenticated;
+-- Data API privileges (required explicitly after 2026-10-30 for new tables /
+-- schema resets). RLS still decides which rows each role can see.
+revoke all on table public.cms_admins from anon, authenticated, service_role;
+revoke all on table public.cms_artworks from anon, authenticated, service_role;
+revoke all on table public.cms_artist_profile from anon, authenticated, service_role;
+revoke all on table public.cms_exhibitions from anon, authenticated, service_role;
 
-grant select on table public.cms_admins to authenticated;
-grant select on table public.cms_artworks to anon, authenticated;
-grant insert, update, delete on table public.cms_artworks to authenticated;
-grant select on table public.cms_artist_profile to anon, authenticated;
-grant insert, update, delete on table public.cms_artist_profile to authenticated;
-grant select on table public.cms_exhibitions to anon, authenticated;
-grant insert, update, delete on table public.cms_exhibitions to authenticated;
+grant select on table public.cms_admins to authenticated, service_role;
+grant select on table public.cms_artworks to anon, authenticated, service_role;
+grant insert, update, delete on table public.cms_artworks to authenticated, service_role;
+grant select on table public.cms_artist_profile to anon, authenticated, service_role;
+grant insert, update, delete on table public.cms_artist_profile to authenticated, service_role;
+grant select on table public.cms_exhibitions to anon, authenticated, service_role;
+grant insert, update, delete on table public.cms_exhibitions to authenticated, service_role;
 
 create policy "CMS admins can read their own access row"
   on public.cms_admins for select to authenticated

@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Administración — Yalain Falcón Yanes</title>
+  <title>Artista — Administración — Yalain Falcón Yanes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
-<body class="cms-body cms-auth-checking">
+<body class="cms-body cms-auth-checking" data-cms-section="artist">
   <a class="skip-link" href="#loginView">Saltar al contenido</a>
   <main class="cms-auth-loading" id="authLoading" role="status" aria-live="polite">Verificando tu sesión…</main>
   <main class="cms-login" id="loginView">
-    <a class="cms-brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
+    <a class="cms-brand" href="../../index.html">Yalain Falcón <span>·</span> Yanes</a>
     <p class="cms-kicker">Gestión del sitio</p>
     <h1>Administrar<br>contenido</h1>
     <p class="cms-intro">Inicia sesión con la cuenta autorizada para editar obras, portada, perfil del artista y exposiciones.</p>
@@ -23,24 +23,24 @@
       <input id="loginEmail" name="email" type="email" autocomplete="username" required>
       <label for="loginPassword">Contraseña</label>
       <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
-      <button class="cms-primary" type="submit">Entrar al CMS</button>
+      <button class="cms-primary" type="submit">Entrar al panel</button>
       <p class="cms-status" id="loginStatus" role="status" aria-live="polite"></p>
     </form>
-    <a class="cms-back" href="../index.html">← Volver al sitio</a>
+    <a class="cms-back" href="../../index.html">← Volver al sitio</a>
   </main>
 
   <div class="cms-app" id="adminView" hidden>
     <aside class="cms-sidebar">
-      <a class="cms-brand" href="../index.html">Yalain Falcón <span>·</span> Yanes</a>
+      <a class="cms-brand" href="../../index.html">Yalain Falcón <span>·</span> Yanes</a>
       <p class="cms-nav-label">Contenido</p>
-      <nav class="cms-navigation" aria-label="Secciones del CMS">
-        <a href="./?section=artworks" data-section="artworks" aria-current="page">Obras</a>
-        <a href="portada/" data-section="cover">Portada</a>
-        <a href="artista/" data-section="artist">Artista</a>
-        <a href="./?section=exhibitions" data-section="exhibitions">Exposiciones</a>
-        <a href="contacto/" data-section="contact">Contacto y redes</a>
+      <nav class="cms-navigation" aria-label="Secciones de administración">
+        <a href="../?section=artworks" data-section="artworks">Obras</a>
+        <a href="../portada/" data-section="cover">Portada</a>
+        <a href="./" data-section="artist" aria-current="page">Artista</a>
+        <a href="../?section=exhibitions" data-section="exhibitions">Exposiciones</a>
+        <a href="../contacto/" data-section="contact">Contacto y redes</a>
       </nav>
-      <a class="cms-back" href="../index.html">← Ver sitio público</a>
+      <a class="cms-back" href="../../index.html">← Ver sitio público</a>
     </aside>
 
     <section class="cms-workspace">
@@ -51,15 +51,15 @@
       <main class="cms-main" id="adminMain">
         <div class="cms-heading">
           <div>
-            <h1 id="sectionTitle" tabindex="-1">Obras</h1>
-            <p id="sectionDescription">Administra las piezas que aparecen en la galería.</p>
+            <h1 id="sectionTitle" tabindex="-1">Artista</h1>
+            <p id="sectionDescription">Edita la biografía, el retrato y la información artística.</p>
           </div>
-          <button type="button" class="cms-primary" id="newRecordButton">Añadir obra</button>
+          <button type="button" class="cms-primary" id="newRecordButton" hidden>Añadir obra</button>
         </div>
         <p class="cms-status cms-main-status" id="mainStatus" role="status" aria-live="polite"></p>
-        <div class="cms-content" id="cmsContent">
-          <section class="cms-records" id="recordList" aria-label="Registros"></section>
-          <section class="cms-editor" aria-label="Editor de contenido">
+        <div class="cms-content is-profile" id="cmsContent">
+          <section class="cms-records" id="recordList" aria-label="Registros" hidden></section>
+          <section class="cms-editor" aria-label="Editor del perfil del artista">
             <form id="recordForm"></form>
           </section>
         </div>
@@ -77,6 +77,6 @@
       </div>
     </form>
   </dialog>
-  <script type="module" src="cms.js"></script>
+  <script type="module" src="../cms.js"></script>
 </body>
 </html>

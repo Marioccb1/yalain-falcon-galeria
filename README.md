@@ -38,10 +38,11 @@ para previsualizarla localmente.
 
 ## CMS
 
-El panel está en `cms/index.html`. Inicia el sitio con `npm run dev` y abre
-`/cms/`. El contenido de portada, el perfil del artista y los datos de contacto
-y redes sociales están separados en `/cms/portada/`, `/cms/artista/` y
-`/cms/contacto/`. Al iniciar sesión como administrador, el menú público también
+El panel está en `admin/index.html`. Inicia el sitio con `npm run dev` y abre
+`/admin/`. El contenido de portada, el perfil del artista y los datos de contacto
+y redes sociales están separados en `/admin/portada/`, `/admin/artista/` y
+`/admin/contacto/`. Las rutas antiguas `/cms/` redirigen a `/admin/`. Al iniciar
+sesión como administrador, el menú público también
 ofrece un acceso directo al panel. El panel usa Supabase Auth con correo y
 contraseña; no incluye registro público ni credenciales de demostración. La
 autorización de administrador también se valida en las políticas RLS, no solo
@@ -55,23 +56,25 @@ de inicio de sesión a administradores que ya están autenticados.
 
 El sitio público incluye un acceso flotante a WhatsApp y un formulario de
 contacto en Inicio. El formulario prepara un correo dirigido a la dirección
-configurada desde `/cms/contacto/`; el visitante lo revisa y lo envía desde su
+configurada desde `/admin/contacto/`; el visitante lo revisa y lo envía desde su
 aplicación de correo predeterminada.
 
 Antes de usarlo:
 
-1. En el SQL Editor del proyecto Supabase, ejecuta en orden los archivos
-   `supabase/migrations/20261016050452_cms_content.sql` y
-   `supabase/migrations/20261018023256_add_site_branding_fields.sql` y
-   `supabase/migrations/20261018035338_add_contact_social_fields.sql`. El primero
-   crea las tablas con RLS, el bucket público de imágenes, las políticas para
-   administradores y una copia inicial del contenido actual del sitio. El
-   segundo agrega campos editables para la portada y el logo; el tercero permite
-   editar teléfonos, WhatsApp, correo e Instagram, Facebook y Threads desde el CMS.
-   Si ya aplicaste migraciones anteriores, ejecuta solo las pendientes en ese
-   orden. Si utilizas la CLI,
-   enlaza el proyecto y aplica las migraciones pendientes con
-   `npx supabase db push`.
+1. En el SQL Editor del proyecto Supabase, ejecuta en orden los archivos de
+   `supabase/migrations/` (o solo las pendientes si ya aplicaste algunas). El
+   primero crea las tablas con RLS, el bucket público de imágenes, las políticas
+   para administradores y una copia inicial del contenido. Las migraciones
+   siguientes añaden portada/logo, contacto/redes, precio de obras y los
+   `GRANT` explícitos del Data API. Si utilizas la CLI, enlaza el proyecto y
+   aplica con `npx supabase db push`.
+
+   **Data API (cambio Supabase 2026-10-30):** las tablas nuevas en `public` ya
+   no reciben acceso automático para `anon` / `authenticated` / `service_role`.
+   Las tablas actuales del sitio no se rompen solas, pero cualquier tabla nueva
+   (o un `db reset` / preview branch) necesita `GRANT` en la misma migración que
+   la crea. Este repo ya los incluye. En el Dashboard, mantén esas tablas
+   marcadas en **Data API → Exposed tables**.
 2. En Supabase Dashboard, crea la cuenta de administrador en
    **Authentication → Users** con tu correo y una contraseña propia. No actives
    el registro público de usuarios para el CMS.
@@ -501,7 +504,7 @@ Evitar elementos ornamentales que resten importancia a la historia del artista.
 
 ## 10. CMS
 
-Ruta: `cms/`
+Ruta: `admin/`
 
 El panel administrativo comparte las variables cromáticas y tipográficas del sitio, pero prioriza claridad y eficiencia.
 

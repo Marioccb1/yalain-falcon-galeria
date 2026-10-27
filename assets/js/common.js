@@ -696,7 +696,7 @@ async function addAdminLink() {
     }
     if(nav.querySelector('[data-admin-link]')) return;
     const link = document.createElement('a');
-    link.href = `${pageBase}cms/`;
+    link.href = `${pageBase}admin/`;
     link.textContent = 'Administración';
     link.dataset.adminLink = '';
     nav.append(link);
