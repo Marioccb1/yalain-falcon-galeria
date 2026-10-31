@@ -33,7 +33,18 @@ function bindImageLoading(root = document){
 
 bindImageLoading();
 
-function artworkRatio(){
+function parseMedidas(medidas = ''){
+  const match = String(medidas).match(/(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)/i);
+  if (!match) return null;
+  const width = Number(match[1].replace(',', '.'));
+  const height = Number(match[2].replace(',', '.'));
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return null;
+  return { width, height };
+}
+
+function artworkRatio(work){
+  const parsed = parseMedidas(work?.medidas);
+  if (parsed) return `${parsed.width} / ${parsed.height}`;
   return '1 / 1';
 }
 
@@ -273,9 +284,17 @@ function renderHang(selector, list, options = {}){
 
 const wallScenes = [
   { id:'sala', label:'Sala', src:salaSceneUrl },
-  { id:'cuarto', label:'Habitación', src:cuartoSceneUrl },
+  { id:'cuarto', label:'Cuarto', src:cuartoSceneUrl },
   { id:'comedor', label:'Comedor', src:comedorSceneUrl },
 ];
+
+const wallSizes = [
+  { id: 'grande', label: 'Grande' },
+  { id: 'mediano', label: 'Mediano' },
+  { id: 'pequeno', label: 'Pequeño' },
+];
+
+let activeWallSize = 'mediano';
 
 /* ============================================================
    MODALES
@@ -334,28 +353,47 @@ function openLightbox(id){
   openModal(modalLight);
 }
 
+function wallSizeLabel(id = activeWallSize){
+  return wallSizes.find((option) => option.id === id)?.label || 'Mediano';
+}
+
 function openWall(id){
   const w = works.find(x => x.id === id);
   if(!w) return;
+  if (!wallSizes.some((option) => option.id === activeWallSize)) activeWallSize = 'mediano';
+  const initialScene = wallScenes[0];
+  const artRatio = artworkRatio(w);
   $('#wallBody').innerHTML = `
-    <div class="wall-preview">
-      <img class="wall-scene-image" src="${wallScenes[0].src}" alt="" aria-hidden="true">
-      <div class="wall-frame">${artworkImgHTML(w)}</div>
+    <div class="wall-preview" data-wall-scene="${initialScene.id}">
+      <img class="wall-scene-image" src="${initialScene.src}" alt="" aria-hidden="true">
+      <div class="wall-frame" data-wall-size="${activeWallSize}" style="--wall-art-ar: ${artRatio}">${artworkImgHTML(w)}</div>
     </div>
-    <div class="wall-scene-picker" role="group" aria-label="Elige el espacio donde ver la pintura">
-      <p class="wall-scene-heading">Elige un espacio</p>
-      <div class="wall-scene-options">
-        ${wallScenes.map((scene, index) => `
-          <button class="wall-scene-option" type="button" data-wall-scene="${scene.id}" aria-pressed="${index === 0}">
-            <img src="${scene.src}" alt="" loading="lazy">
-            <span>${scene.label}</span>
-          </button>
-        `).join('')}
+    <div class="wall-controls">
+      <div class="wall-size-picker" role="group" aria-label="Elige el tamaño del cuadro">
+        <p class="wall-scene-heading">Elige un tamaño</p>
+        <div class="wall-size-options">
+          ${wallSizes.map((size) => `
+            <button class="wall-size-option" type="button" data-wall-size="${size.id}" aria-pressed="${size.id === activeWallSize}">
+              ${size.label}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="wall-scene-picker" role="group" aria-label="Elige el espacio donde ver la pintura">
+        <p class="wall-scene-heading">Elige un espacio</p>
+        <div class="wall-scene-options">
+          ${wallScenes.map((scene, index) => `
+            <button class="wall-scene-option" type="button" data-wall-scene="${scene.id}" aria-pressed="${index === 0}">
+              <img src="${scene.src}" alt="" loading="lazy">
+              <span>${scene.label}</span>
+            </button>
+          `).join('')}
+        </div>
       </div>
     </div>
     <div class="wall-caption">
       <span>${escapeHTML(w.titulo)} · ${escapeHTML(w.anio)}</span>
-      <span data-wall-scene-announcement aria-live="polite">Vista seleccionada: ${wallScenes[0].label}</span>
+      <span data-wall-view-announcement aria-live="polite">Vista: ${initialScene.label} · ${wallSizeLabel()}</span>
       <span>${escapeHTML(w.medidas)} · ${escapeHTML(w.tecnica)}</span>
       ${artworkPriceHTML(w, { tag: 'span', className: 'artwork-price artwork-price--inline' })}
     </div>
@@ -364,21 +402,47 @@ function openWall(id){
   openModal(modalWall);
 }
 
+function updateWallViewAnnouncement(){
+  const sceneButton = $('.wall-scene-option[data-wall-scene][aria-pressed="true"]', modalWall);
+  const sceneLabel = sceneButton?.querySelector('span')?.textContent.trim()
+    || wallScenes.find((option) => option.id === sceneButton?.dataset.wallScene)?.label
+    || wallScenes[0].label;
+  const announcement = $('[data-wall-view-announcement]', modalWall);
+  if (announcement) announcement.textContent = `Vista: ${sceneLabel} · ${wallSizeLabel()}`;
+}
+
 function selectWallScene(id){
   const scene = wallScenes.find((option) => option.id === id);
   if(!scene) return;
-  $('.wall-scene-image', modalWall).src = scene.src;
-  $$('[data-wall-scene]', modalWall).forEach((button) => {
+  const preview = $('.wall-preview', modalWall);
+  const sceneImage = $('.wall-scene-image', modalWall);
+  if (preview) preview.dataset.wallScene = scene.id;
+  if (sceneImage) sceneImage.src = scene.src;
+  $$('.wall-scene-option[data-wall-scene]', modalWall).forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.wallScene === scene.id));
   });
-  $('[data-wall-scene-announcement]', modalWall).textContent = `Vista seleccionada: ${scene.label}`;
+  updateWallViewAnnouncement();
+}
+
+function selectWallSize(id){
+  const size = wallSizes.find((option) => option.id === id);
+  if (!size) return;
+  activeWallSize = size.id;
+  const frame = $('.wall-frame', modalWall);
+  if (frame) frame.dataset.wallSize = size.id;
+  $$('.wall-size-option[data-wall-size]', modalWall).forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.wallSize === size.id));
+  });
+  updateWallViewAnnouncement();
 }
 
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
   if (target.closest('[data-close]')) { closeModals(); return; }
-  const wallScene = target.closest('[data-wall-scene]');
+  const wallSize = target.closest('.wall-size-option[data-wall-size]');
+  if (wallSize) { selectWallSize(wallSize.dataset.wallSize); return; }
+  const wallScene = target.closest('.wall-scene-option[data-wall-scene]');
   if (wallScene) { selectWallScene(wallScene.dataset.wallScene); return; }
   const light = target.closest('[data-light]');
   if (light) { openLightbox(light.dataset.light); return; }

@@ -1,4 +1,4 @@
-import { $, artworkImgHTML, artworkPriceHTML, bindImageLoading, escapeHTML, getContactHref, renderHang } from './assets/js/common.js';
+import { $, artworkImgHTML, artworkPriceHTML, artworkRatio, bindImageLoading, escapeHTML, getContactHref, renderHang } from './assets/js/common.js';
 import { displayImageURL } from './utils/images.js';
 
 const { works, IMG } = window;
@@ -54,6 +54,7 @@ if (heroWork) {
   if (wallFeatureButton) wallFeatureButton.dataset.wall = heroWork.id;
   const wallFeatureArtwork = $('#wallFeatureArtwork');
   if (wallFeatureArtwork) {
+    wallFeatureArtwork.style.setProperty('--wall-art-ar', artworkRatio(heroWork));
     wallFeatureArtwork.innerHTML = artworkImgHTML(heroWork, 800);
     const wallImg = wallFeatureArtwork.querySelector('img');
     if (wallImg) {

@@ -1210,7 +1210,7 @@ button {
 .wall-room {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--color-surface);
 }
@@ -1219,17 +1219,18 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
 }
 
 .wall-room-art {
   position: absolute;
   z-index: 2;
-  top: 12%;
-  left: 58%;
-  width: min(28%, 240px);
-  aspect-ratio: 1 / 1;
+  top: 13%;
+  left: 47%;
+  width: 20%;
+  aspect-ratio: var(--wall-art-ar, 150 / 110);
   transform: translateX(-50%);
-  padding: 5px;
+  padding: clamp(3px, 0.55%, 7px);
   background: #fff;
   box-shadow: 0 14px 30px -12px rgba(59, 47, 47, .45);
 }
@@ -1241,7 +1242,7 @@ button {
 .wall-room-art .artwork-img {
   width: 100%;
   height: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: inherit;
   background: #fff;
 }
 
@@ -1735,7 +1736,8 @@ button {
 .pager-thumb .artwork-img img {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
+  object-position: center;
 }
 
 .pager-thumb-label {
@@ -2067,6 +2069,11 @@ button {
   animation: fadeIn var(--transition-normal) ease both;
 }
 
+html:has(.modal.is-open),
+body:has(.modal.is-open) {
+  overflow: hidden;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -2118,17 +2125,23 @@ button {
   overflow: hidden;
   background: transparent;
   border: 0;
-  padding: 56px 20px 20px;
+  padding: 56px 24px 28px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #wallBody {
-  flex: 1;
+  width: min(100%, calc(min(72vh, 760px) * 16 / 9));
+  max-width: 100%;
+  max-height: 100%;
   min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 16px;
   overflow: hidden;
 }
 
@@ -2158,7 +2171,6 @@ button {
 }
 
 .lightbox-stage .artwork-img,
-.wall-stage .artwork-img,
 .modal-panel .artwork-img {
   background: transparent;
   aspect-ratio: 1 / 1;
@@ -2179,11 +2191,10 @@ button {
 .wall-scene {
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 0;
-  aspect-ratio: auto;
+  aspect-ratio: 16 / 9;
+  flex: 0 0 auto;
   overflow: hidden;
-  background: transparent;
+  background: #2f2c28;
 }
 
 .wall-scene-image,
@@ -2192,45 +2203,124 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
 }
 
 .wall-frame {
   position: absolute;
-  top: 16%;
-  left: 58%;
-  width: min(22%, 200px);
-  aspect-ratio: 1 / 1;
+  top: 14%;
+  left: 48%;
+  width: 18%;
+  aspect-ratio: var(--wall-art-ar, 150 / 110);
   transform: translateX(-50%);
-  padding: 0;
-  background: transparent;
-  box-shadow: 0 10px 24px -14px rgba(59, 47, 47, .4);
+  padding: clamp(3px, 0.55%, 7px);
+  background: #fff;
+  box-shadow: 0 14px 30px -12px rgba(59, 47, 47, .45);
+  transition:
+    width var(--transition-fast),
+    top var(--transition-fast),
+    left var(--transition-fast);
+}
+
+/* Sala — colgado sobre el sofá, sin tocar el respaldo */
+.wall-preview[data-wall-scene="sala"] .wall-frame[data-wall-size="pequeno"] {
+  top: 17%;
+  left: 47%;
+  width: 13%;
+}
+
+.wall-preview[data-wall-scene="sala"] .wall-frame[data-wall-size="mediano"] {
+  top: 13%;
+  left: 47%;
+  width: 20%;
+}
+
+.wall-preview[data-wall-scene="sala"] .wall-frame[data-wall-size="grande"] {
+  top: 10%;
+  left: 47%;
+  width: 27%;
+}
+
+/* Cuarto — centrado sobre la banca, con aire hasta objetos */
+.wall-preview[data-wall-scene="cuarto"] .wall-frame[data-wall-size="pequeno"] {
+  top: 15%;
+  left: 54%;
+  width: 13%;
+}
+
+.wall-preview[data-wall-scene="cuarto"] .wall-frame[data-wall-size="mediano"] {
+  top: 12%;
+  left: 54%;
+  width: 20%;
+}
+
+.wall-preview[data-wall-scene="cuarto"] .wall-frame[data-wall-size="grande"] {
+  top: 9%;
+  left: 54%;
+  width: 27%;
+}
+
+/* Comedor — muro trasero, por encima del aparador */
+.wall-preview[data-wall-scene="comedor"] .wall-frame[data-wall-size="pequeno"] {
+  top: 14%;
+  left: 58%;
+  width: 12%;
+}
+
+.wall-preview[data-wall-scene="comedor"] .wall-frame[data-wall-size="mediano"] {
+  top: 11%;
+  left: 58%;
+  width: 19%;
+}
+
+.wall-preview[data-wall-scene="comedor"] .wall-frame[data-wall-size="grande"] {
+  top: 8%;
+  left: 58%;
+  width: 26%;
 }
 
 .wall-frame .artwork-img {
   width: 100%;
   height: 100%;
-  aspect-ratio: 1 / 1;
-  background: transparent;
+  max-height: none;
+  margin: 0;
+  aspect-ratio: inherit;
+  background: #fff;
 }
 
 .wall-frame .artwork-img img {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
+}
+
+.wall-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: end;
+  gap: 16px 32px;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .wall-caption {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px 16px;
   margin: 0;
   font-size: 13px;
+  text-align: center;
   color: rgba(255, 255, 255, .82);
 }
 
-.wall-scene-picker {
+.wall-scene-picker,
+.wall-size-picker {
   margin: 0;
   flex-shrink: 0;
+  display: grid;
+  justify-items: center;
 }
 
 .wall-scene-heading {
@@ -2238,13 +2328,40 @@ button {
   font-size: 12px;
   letter-spacing: .12em;
   text-transform: uppercase;
+  text-align: center;
   color: rgba(255, 255, 255, .7);
 }
 
-.wall-scene-options {
+.wall-scene-options,
+.wall-size-options {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
+}
+
+.wall-size-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 88px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, .35);
+  background: rgba(255, 255, 255, .08);
+  color: rgba(255, 255, 255, .85);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.wall-size-option[aria-pressed="true"],
+.wall-size-option:hover,
+.wall-size-option:focus-visible {
+  border-color: #fff;
+  color: #fff;
+  background: rgba(255, 255, 255, .16);
 }
 
 .wall-scene-option {
@@ -2797,14 +2914,131 @@ button {
   }
 
   .wall-room {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
   }
 
   .wall-room-art {
+    top: 13%;
+    left: 48%;
+    width: 22%;
+    padding: clamp(3px, 0.7%, 6px);
+  }
+
+  .wall-stage {
+    justify-content: stretch;
+    align-items: stretch;
+    padding: 52px 12px max(12px, env(safe-area-inset-bottom, 0px));
+  }
+
+  #wallBody {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    gap: 12px;
+    overflow: hidden;
+    justify-content: flex-start;
+  }
+
+  .wall-preview {
+    width: 100%;
+    flex: 1 1 0;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .wall-controls,
+  .wall-caption {
+    flex-shrink: 0;
+  }
+
+  .wall-scene-image {
+    object-position: center 48%;
+  }
+
+  .wall-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .wall-scene-picker,
+  .wall-size-picker {
+    justify-items: stretch;
+  }
+
+  .wall-scene-heading {
+    text-align: left;
+  }
+
+  .wall-size-options {
+    justify-content: stretch;
+  }
+
+  .wall-scene-options {
+    justify-content: flex-start;
+  }
+
+  .wall-caption {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .wall-preview[data-wall-scene="sala"] .wall-frame[data-wall-size="pequeno"] {
+    top: 18%;
+    width: 22%;
+  }
+
+  .wall-preview[data-wall-scene="sala"] .wall-frame[data-wall-size="mediano"] {
+    top: 14%;
+    width: 32%;
+  }
+
+  .wall-preview[data-wall-scene="sala"] .wall-frame[data-wall-size="grande"] {
+    top: 11%;
+    width: 42%;
+  }
+
+  .wall-preview[data-wall-scene="cuarto"] .wall-frame[data-wall-size="pequeno"] {
+    top: 16%;
+    width: 22%;
+  }
+
+  .wall-preview[data-wall-scene="cuarto"] .wall-frame[data-wall-size="mediano"] {
+    top: 13%;
+    width: 32%;
+  }
+
+  .wall-preview[data-wall-scene="cuarto"] .wall-frame[data-wall-size="grande"] {
     top: 10%;
-    left: 55%;
-    width: 34%;
-    padding: 4px;
+    width: 42%;
+  }
+
+  .wall-preview[data-wall-scene="comedor"] .wall-frame[data-wall-size="pequeno"] {
+    top: 15%;
+    width: 20%;
+  }
+
+  .wall-preview[data-wall-scene="comedor"] .wall-frame[data-wall-size="mediano"] {
+    top: 12%;
+    width: 30%;
+  }
+
+  .wall-preview[data-wall-scene="comedor"] .wall-frame[data-wall-size="grande"] {
+    top: 9%;
+    width: 40%;
+  }
+
+  .wall-scene-option {
+    width: 76px;
+  }
+
+  .wall-caption {
+    font-size: 12px;
+  }
+
+  .wall-size-option {
+    min-width: 0;
+    flex: 1 1 0;
   }
 
   .artist-preview-mat {
